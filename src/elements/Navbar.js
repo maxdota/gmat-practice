@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 const Navbar =()=>{
   return (
     <div className="nav-top">
-      <b>GMAT PRACTICE</b>
+      <a href="/"><b>GMAT PRACTICE</b></a>
     </div>
   )
 }

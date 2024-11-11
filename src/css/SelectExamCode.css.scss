@@ -1,0 +1,19 @@
+.select-exam-code {
+  .mid-cont {
+    margin-top: 10vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40vw;
+  }
+
+  .ecode-opt-cont {
+    height: 60vh;
+    overflow: auto;
+    overflow-x: hidden;
+    border: 1px solid black;
+    background: transparent;
+    margin-top: 10px;
+    margin-bottom: 25px;
+  }
+}
