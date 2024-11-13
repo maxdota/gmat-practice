@@ -1,4 +1,4 @@
-.select-order {
+.sec-data {
   h2 {
     margin-bottom: 40px;
   }
@@ -6,13 +6,8 @@
   .mid-cont {
     margin-top: 80px;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 60vw;
-  }
-
-  button {
-    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
   }
 
   .css-1dimb5e-singleValue, .css-olqui2-singleValue {
@@ -27,5 +22,10 @@
   p {
     font-size: 17px;
     margin-bottom: 25px;
+  }
+
+  .instruction-desc {
+    font-size: 20px;
+    margin-bottom: 85px;
   }
 }

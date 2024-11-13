@@ -66,7 +66,7 @@ const Home = () => {
     // const storedData = JSON.parse(localStorage.getItem('data'));
     // console.log("store data: " + storedData["key"]);
     localStorage.setItem('ecode', ecode);
-    navigate("/select-order")
+    navigate("/select-order");
   };
 
   return <div className="select-exam-code">
