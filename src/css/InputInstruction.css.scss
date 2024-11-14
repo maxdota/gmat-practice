@@ -1,0 +1,21 @@
+.input-instruction {
+  p {
+    margin: 0;
+  }
+  .mid-cont {
+    margin-top: 80px;
+    display: block;
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .description-text {
+    margin-bottom: 25px;
+  }
+  .editor-container__editor {
+    max-width: none;
+    min-width: 0;
+    width: 90vw;
+    margin-bottom: 85px;
+  }
+}

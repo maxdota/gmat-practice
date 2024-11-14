@@ -55,15 +55,49 @@ import {
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
-import { useNavigate } from "react-router-dom";
+import { initializeApp } from "firebase/app";
+import { getDatabase, onValue, ref, update } from "firebase/database";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../elements/Navbar";
+import '../css/InputInstruction.css.scss';
+import Modal from "react-modal";
 
-const InputDescription = () => {
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_DOMAIN,
+  databaseURL: process.env.REACT_APP_DB_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_ST_BUC,
+  messagingSenderId: process.env.REACT_APP_MESS_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASURE_ID,
+};
+
+const InputInstruction = () => {
+  Modal.appElement = "#root";
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const list = [
+    { value: 'quan', label: 'Quantitative Reasoning' },
+    { value: 'verb', label: 'Verbal Reasoning' },
+    { value: 'data', label: 'Data Insights' }
+  ];
   const navigate = useNavigate();
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
+  const [inputEditor, setInputEditor] = useState(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [instructionData, setInstructionData] = useState({ editorReady: false, firebaseData: "" });
+  const search = useLocation().search;
+  const code = new URLSearchParams(search).get("code");
+  const sectionName = list.filter(item => item.value === code)[0].label;
 
   useEffect(() => {
+    // if (firstLoad && instructionData.editorReady) {
+    //   setFirstLoad(false);
+    //   readFirebaseData();
+    // }
     setIsLayoutReady(true);
     return () => setIsLayoutReady(false);
   }, []);
@@ -236,23 +270,53 @@ const InputDescription = () => {
     }
   };
   const onUpdate = () => {
-    if (editor === undefined) return;
-    console.log("" + Object.getOwnPropertyNames(editorRef.current));
-    localStorage.setItem('test_e_data', editor.getData());
+    console.log("editor = " + inputEditor);
+    if (inputEditor === undefined || inputEditor === null) return;
+    let data = inputEditor.getData();
+    localStorage.setItem('test_e_data', data);
+    writeInstruction(data);
     navigate("/sec-data");
   };
+
+  function readFirebaseData(e) {
+    const dataRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA + `/instructions/${ code }`);
+    onValue(dataRef, (snapshot) => {
+      let rawData = snapshot.val();
+      console.log("fb data: " + rawData);
+      e.setData((rawData === null || rawData === undefined) ? "" : rawData);
+      setInstructionData({ editorReady: instructionData.editorReady, firebaseData: rawData });
+    }, {
+      onlyOnce: true
+    });
+  }
+
+  const writeInstruction = (data) => {
+    const updates = {};
+    updates[`instructions/${ code }`] = data;
+    const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
+    update(exRef, updates).then(() => {
+      // readFirebaseData();
+    });
+  };
   return (
-    <div>
-      <div className="main-container">
-        <div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
-          <div className="editor-container__editor">
-            <div ref={editorRef}>{isLayoutReady && <CKEditor
-              editor={ClassicEditor}
-              config={editorConfig}
-              onReady={ (e) => {
-                editor = e;
-              }}
-            />}</div>
+    <div className="input-instruction">
+      <Navbar/>
+      <div className="mid-cont">
+        <h1>Edit { sectionName } Instructions</h1>
+        <div className="main-container">
+          <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
+            <div className="editor-container__editor">
+              <div ref={ editorRef }>{ isLayoutReady && <CKEditor
+                editor={ ClassicEditor }
+                config={ editorConfig }
+                onReady={ (e) => {
+                  editor = e;
+                  setInputEditor(e);
+                  editor.setData(instructionData.firebaseData);
+                  readFirebaseData(editor);
+                } }
+              /> }</div>
+            </div>
           </div>
         </div>
       </div>
@@ -260,4 +324,4 @@ const InputDescription = () => {
     </div>
   );
 }
-export default InputDescription;
+export default InputInstruction;

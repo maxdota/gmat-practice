@@ -1,12 +1,13 @@
-.sec-data {
-  p {
-    margin: 0;
-  }
+.edit-exam-instructions {
   .mid-cont {
     margin-top: 80px;
     display: block;
-    width: 90vw;
     margin-left: auto;
     margin-right: auto;
+    width: 90vw;
+  }
+
+  .description-text {
+    margin-bottom: 25px;
   }
 }

@@ -17,7 +17,7 @@ const SecData = () => {
   console.log("data: " + localStorage.getItem('test_e_data'));
 
   Modal.appElement = "#root";
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
   const [third, setThird] = useState("");
@@ -58,14 +58,12 @@ const SecData = () => {
     <Navbar/>
     <div className="mid-cont">
       <div className="instruction-cont">
-        <h2>Data Insights Instructions</h2>
-        <div id="ins_desc" className="instruction-desc">Select the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administered</div>
-        {/*<div className="instruction-desc">Select the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administeredSelect the order <pre>in which the exam</pre> sections are to be administered</div>*/}
+        <div id="ins_desc" className="instruction-desc"/>
       </div>
       <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
     </div>
 
-    <Modal className="warn-modal" isOpen={ displayModal } >
+    <Modal className="warn-modal" isOpen={ displayModal }>
       <div className="modal-nav-top">Cannot Continue</div>
       <div className="description-text">Please select the order in which the exam sections are to be administered</div>
       <button className="but-ok" onClick={ onCloseModal }>OK</button>

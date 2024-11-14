@@ -1,0 +1,47 @@
+.edit-exam-details {
+  .mid-cont {
+    margin-top: 80px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90vw;
+  }
+
+  .ecode-opt-cont {
+    width: 100px;
+    height: 60vh;
+    overflow: auto;
+    overflow-x: hidden;
+    border: 1px solid black;
+    background: transparent;
+    margin-top: 10px;
+    margin-bottom: 25px;
+  }
+
+  .edit-label {
+    display: inline-flex;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .edit-exam-cont {
+    width: 165px;
+  }
+
+  .add-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    float: right;
+  }
+
+  .delete-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    float: right;
+    border-radius: 6px;
+    margin-top: -6px;
+    margin-right: -10px;
+  }
+}
