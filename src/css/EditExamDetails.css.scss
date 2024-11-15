@@ -18,6 +18,28 @@
     margin-bottom: 25px;
   }
 
+  .section-opt-cont {
+    width: 120px;
+    height: 60vh;
+    overflow: auto;
+    overflow-x: hidden;
+    border: 1px solid black;
+    background: transparent;
+    margin-top: 10px;
+    margin-bottom: 25px;
+  }
+
+  .info-cont {
+    width: 550px;
+    height: 60vh;
+    overflow: auto;
+    border: 1px solid black;
+    background: transparent;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding: 6px 12px;
+  }
+
   .edit-label {
     display: inline-flex;
     margin-top: 0;
@@ -25,7 +47,30 @@
   }
 
   .edit-exam-cont {
-    width: 165px;
+    width: 115px;
+  }
+
+  .section-cont {
+    width: 120px;
+    margin-left: 50px;
+  }
+
+  .edit-question-cont {
+    width: 150px;
+    margin-left: 50px;
+  }
+
+  .question-info-cont {
+    margin-left: 50px;
+  }
+
+  .edit-cont {
+    display: flex;
+  }
+
+  .section-label {
+    display: block;
+    padding: 6px 12px;
   }
 
   .add-image {
@@ -43,5 +88,53 @@
     border-radius: 6px;
     margin-top: -6px;
     margin-right: -10px;
+  }
+}
+
+.add-question-modal {
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+  padding-bottom: 20px;
+  margin-top: 30vh;
+  background-color: white;
+  border-radius: 10px;
+  outline: none !important;
+
+  .container-but {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: fit-content;
+  }
+
+  .but-cancel {
+    border: 1px solid black;
+    background: transparent;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+
+  .but-ok {
+    border: 1px solid dodgerblue;
+    background: dodgerblue;
+    color: white;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    margin-top: 10px;
+    margin-left: 20px;
+  }
+
+  .modal-text-input {
+    margin: 15px;
+    padding: 5px 10px;
+    width: 545px;
+  }
+
+  .add-question-select {
+    margin: 15px;
   }
 }
