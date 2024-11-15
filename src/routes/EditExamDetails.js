@@ -150,8 +150,9 @@ const EditExamDetails = () => {
               checked={ item === question }
               onChange={ (e) => {
                 let q = e.currentTarget.value;
-                setQuestion(q)
-                readQuestionInfoFirebaseData(q)
+                setQuestion(q);
+                setQuestionInfo("");
+                readQuestionInfoFirebaseData(q);
               } }
             />
             <div className="radio-text">{ item }</div>
