@@ -151,7 +151,6 @@ const EditExamDetails = () => {
               onChange={ (e) => {
                 let q = e.currentTarget.value;
                 setQuestion(q);
-                setQuestionInfo("");
                 readQuestionInfoFirebaseData(q);
               } }
             />
@@ -165,9 +164,19 @@ const EditExamDetails = () => {
     );
   }
 
+  const onBack = () => {
+    navigate(-1);
+  };
   const onNext = () => {
-    // localStorage.setItem('ecode', ecode);
-    // navigate("/select-order");
+    if (ecode === "" || section === "" || question === "") {
+      setDisplayWarnModal({
+        display: true,
+        title: "Cannot Continue",
+        description: "Please choose a question to edit"
+      });
+      return;
+    }
+    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }`);
   };
 
   const onDeleteExam = (data) => {
@@ -238,9 +247,11 @@ const EditExamDetails = () => {
       onlyOnce: true
     });
   }
+
   function getLabelFromList(list, value) {
     return list.filter(item => item.value === value)[0].label;
   }
+
   function readQuestionInfoFirebaseData(q) {
     const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + q;
     console.log("path: " + path);
@@ -258,9 +269,15 @@ const EditExamDetails = () => {
           rightType: rawData["arrangement"] === "left_right" ? rawData["right"]["type"] : null,
         };
         let info = `Arrangement: ${ getLabelFromList(ARRANGEMENT_LIST, data.arrangement) }`;
-        if (data.centerType != null) { info += `<br/>Center Type: ${ getLabelFromList(CENTER_TYPE_LIST, data.centerType) }`; }
-        if (data.leftType != null) { info += `<br/>Left Type: ${ getLabelFromList(LEFT_TYPE_LIST, data.leftType) }`; }
-        if (data.rightType != null) { info += `<br/>Right Type: ${ getLabelFromList(RIGHT_TYPE_LIST, data.rightType) }`; }
+        if (data.centerType != null) {
+          info += `<br/>Center Type: ${ getLabelFromList(CENTER_TYPE_LIST, data.centerType) }`;
+        }
+        if (data.leftType != null) {
+          info += `<br/>Left Type: ${ getLabelFromList(LEFT_TYPE_LIST, data.leftType) }`;
+        }
+        if (data.rightType != null) {
+          info += `<br/>Right Type: ${ getLabelFromList(RIGHT_TYPE_LIST, data.rightType) }`;
+        }
         setQuestionInfo(info);
         setQuestionData(data);
       }
@@ -442,7 +459,8 @@ const EditExamDetails = () => {
           <div className="info-cont" dangerouslySetInnerHTML={ { __html: questionInfo } }/>
         </div>
       </div>
-      <button className="but-next" onClick={ onNext }>NEXT</button>
+      <button className="but-back-bottom" onClick={ onBack }>BACK</button>
+      <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
     </div>
 
     <Modal

@@ -53,13 +53,14 @@ import {
   Underline,
   Undo
 } from 'ckeditor5';
+import SimpleBox from "../elements/ckeditor/simplebox";
 
 import 'ckeditor5/ckeditor5.css';
 import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref, update } from "firebase/database";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../elements/Navbar";
-import '../css/InputInstruction.css.scss';
+import '../css/InputQuestion.css.scss';
 import Modal from "react-modal";
 
 const firebaseConfig = {
@@ -73,7 +74,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURE_ID,
 };
 
-const InputInstruction = () => {
+const InputQuestion = () => {
   Modal.appElement = "#root";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -90,8 +91,11 @@ const InputInstruction = () => {
   const [firstLoad, setFirstLoad] = useState(true);
   const [instructionData, setInstructionData] = useState({ editorReady: false, firebaseData: "" });
   const search = useLocation().search;
-  const code = new URLSearchParams(search).get("code");
-  const sectionName = list.filter(item => item.value === code)[0].label;
+  let params = new URLSearchParams(search);
+  const ecode = params.get("ecode");
+  const section = params.get("section");
+  const question = params.get("question");
+  const sectionName = list.filter(item => item.value === section)[0].label;
 
   useEffect(() => {
     // if (firstLoad && instructionData.editorReady) {
@@ -106,6 +110,7 @@ const InputInstruction = () => {
   const editorConfig = {
     toolbar: {
       items: [
+        'simpleBox',
         'undo',
         'redo',
         '|',
@@ -186,7 +191,8 @@ const InputInstruction = () => {
       TextTransformation,
       TodoList,
       Underline,
-      Undo
+      Undo,
+      SimpleBox
     ],
     fontFamily: {
       supportAllValues: true
@@ -276,36 +282,35 @@ const InputInstruction = () => {
     console.log("editor = " + inputEditor);
     if (inputEditor === undefined || inputEditor === null) return;
     let data = inputEditor.getData();
-    localStorage.setItem('test_e_data', data);
-    writeInstruction(data);
-    navigate("/sec-data");
+    localStorage.setItem('test_input_question', data);
+    // writeInstruction(data);
   };
 
-  function readFirebaseData(e) {
-    const dataRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA + `/instructions/${ code }`);
-    onValue(dataRef, (snapshot) => {
-      let rawData = snapshot.val();
-      console.log("fb data: " + rawData);
-      e.setData((rawData === null || rawData === undefined) ? "" : rawData);
-      setInstructionData({ editorReady: instructionData.editorReady, firebaseData: rawData });
-    }, {
-      onlyOnce: true
-    });
-  }
+  // function readFirebaseData(e) {
+  //   const dataRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA + `/instructions/${ code }`);
+  //   onValue(dataRef, (snapshot) => {
+  //     let rawData = snapshot.val();
+  //     console.log("fb data: " + rawData);
+  //     e.setData((rawData === null || rawData === undefined) ? "" : rawData);
+  //     setInstructionData({ editorReady: instructionData.editorReady, firebaseData: rawData });
+  //   }, {
+  //     onlyOnce: true
+  //   });
+  // }
 
-  const writeInstruction = (data) => {
-    const updates = {};
-    updates[`instructions/${ code }`] = data;
-    const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
-    update(exRef, updates).then(() => {
-      // readFirebaseData();
-    });
-  };
+  // const writeInstruction = (data) => {
+  //   const updates = {};
+  //   updates[`instructions/${ code }`] = data;
+  //   const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
+  //   update(exRef, updates).then(() => {
+  //     // readFirebaseData();
+  //   });
+  // };
   return (
-    <div className="input-instruction">
+    <div className="input-question">
       <Navbar/>
       <div className="mid-cont">
-        <h1>Edit { sectionName } Instructions</h1>
+        <h1>Edit Exam [{ ecode }], { sectionName }, Question Number [{ question }]</h1>
         <div className="main-container">
           <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
             <div className="editor-container__editor">
@@ -315,8 +320,13 @@ const InputInstruction = () => {
                 onReady={ (e) => {
                   editor = e;
                   setInputEditor(e);
-                  editor.setData(instructionData.firebaseData);
-                  readFirebaseData(editor);
+                  // editor.setData(instructionData.firebaseData);
+                  if (localStorage.getItem("test_input_question") === null) {
+                    editor.setData("");
+                  } else {
+                    editor.setData(localStorage.getItem("test_input_question"));
+                  }
+                  // readFirebaseData(editor);
                 } }
               /> }</div>
             </div>
@@ -328,4 +338,4 @@ const InputInstruction = () => {
     </div>
   );
 }
-export default InputInstruction;
+export default InputQuestion;

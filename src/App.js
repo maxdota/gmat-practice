@@ -1,6 +1,6 @@
 import './css/App.css.scss';
 import React from 'react';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import About from "./routes/About";
 import SelectOrder from "./routes/SelectOrder";
 import SelectExamCode from "./routes/SelectExamCode";
@@ -10,6 +10,7 @@ import EditExamDetails from "./routes/EditExamDetails";
 import InputDescription from "./routes/InputDescription";
 import EditExamInstructions from "./routes/EditExamInstructions";
 import InputInstruction from "./routes/InputInstruction";
+import InputQuestion from "./routes/InputQuestion";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/edit-exam-details" element={ <EditExamDetails/> }/>
         <Route path="/edit-exam-instructions" element={ <EditExamInstructions/> }/>
         <Route path="/input-instruction" element={ <InputInstruction/> }/>
+        <Route path="/input-question" element={ <InputQuestion/> }/>
         <Route path="/about" element={ <About/> }/>
       </Routes>
     </>
@@ -32,3 +34,7 @@ function App() {
 
 
 export default App;
+
+export function doSomething() {
+  console.log("do something!");
+}

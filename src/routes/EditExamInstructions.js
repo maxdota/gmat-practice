@@ -8,6 +8,9 @@ const EditExamInstructions = () => {
   const editInstruction = (sectionCode) => {
     navigate("/input-instruction?code=" + sectionCode);
   };
+  const onBack = () => {
+    navigate(-1);
+  };
 
   return <div className="edit-exam-instructions">
     <Navbar/>
@@ -17,6 +20,7 @@ const EditExamInstructions = () => {
       <button className="but-option" onClick={ () => editInstruction("data") }>Data Insights</button>
       <button className="but-option" onClick={ () => editInstruction("verb") }>Verbal Reasoning</button>
       <button className="but-option" onClick={ () => editInstruction("quan") }>Quantitative Reasoning</button>
+      <button className="but-back-bottom" onClick={ onBack }>BACK</button>
     </div>
   </div>;
 };
