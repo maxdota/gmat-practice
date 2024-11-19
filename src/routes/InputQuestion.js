@@ -62,6 +62,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../elements/Navbar";
 import '../css/InputQuestion.css.scss';
 import Modal from "react-modal";
+import Placeholder from "../elements/ckeditor/placeholder";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -111,6 +112,7 @@ const InputQuestion = () => {
     toolbar: {
       items: [
         'simpleBox',
+        'placeholder',
         'undo',
         'redo',
         '|',
@@ -192,7 +194,8 @@ const InputQuestion = () => {
       TodoList,
       Underline,
       Undo,
-      SimpleBox
+      SimpleBox,
+      Placeholder
     ],
     fontFamily: {
       supportAllValues: true
