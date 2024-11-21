@@ -1,6 +1,6 @@
 import { Command } from 'ckeditor5';
 
-export default class InsertSimpleBoxCommand extends Command {
+export default class SimpleBoxCommand extends Command {
   execute(a) {
     this.editor.model.change( writer => {
       // Insert <simpleBox>*</simpleBox> at the current selection position

@@ -1,17 +1,15 @@
 import { Plugin, toWidget, toWidgetEditable, Widget } from 'ckeditor5';
-import InsertSimpleBoxCommand from './InsertSimpleBoxCommand';
+import SimpleBoxCommand from './simpleBoxCommand';
 
 export default class SimpleBoxEditing extends Plugin {
   static get requires() {                                                    // ADDED
     return [ Widget ];
   }
   init() {
-    console.log( 'SimpleBoxEditing#init() got called' );
-
     this._defineSchema();
     this._defineConverters();
 
-    this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
+    this.editor.commands.add( 'insertSimpleBox', new SimpleBoxCommand( this.editor ) );
   }
 
   _defineSchema() {                                                          // ADDED

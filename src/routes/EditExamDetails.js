@@ -100,6 +100,7 @@ const EditExamDetails = () => {
                 setSection("");
                 setQuestion("");
                 setQuestionList([]);
+                setQuestionData({});
               } }
             />
             <div className="radio-text">{ item }</div>
@@ -128,6 +129,7 @@ const EditExamDetails = () => {
                 readQuestionFirebaseData(sec);
                 setSection(sec);
                 setQuestion("");
+                setQuestionData({});
               } }
             />
             <div className="radio-text">{ item.label }</div>
@@ -151,6 +153,7 @@ const EditExamDetails = () => {
               onChange={ (e) => {
                 let q = e.currentTarget.value;
                 setQuestion(q);
+                setQuestionData({});
                 readQuestionInfoFirebaseData(q);
               } }
             />
@@ -168,7 +171,7 @@ const EditExamDetails = () => {
     navigate(-1);
   };
   const onNext = () => {
-    if (ecode === "" || section === "" || question === "") {
+    if (ecode === "" || section === "" || question === "" || questionData.arrangement === null) {
       setDisplayWarnModal({
         display: true,
         title: "Cannot Continue",
@@ -176,7 +179,8 @@ const EditExamDetails = () => {
       });
       return;
     }
-    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }`);
+    navigate(`/edit-question-details?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ questionData.arrangement }`);
+    // navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }`);
   };
 
   const onDeleteExam = (data) => {
@@ -216,15 +220,15 @@ const EditExamDetails = () => {
   };
 
   const getMissingNumber = (numberList) => {
-    let questionNumber = 0;
+    let number = 0;
     numberList.some(q => {
-      if ((questionNumber + 1).toString() !== q) {
+      if ((number + 1).toString() !== q) {
         return true;
       }
-      questionNumber += 1;
+      number += 1;
       return false;
     });
-    return questionNumber + 1;
+    return number + 1;
   }
 
   function readFirebaseData() {
@@ -325,6 +329,7 @@ const EditExamDetails = () => {
       setSection("");
       setQuestion("");
       setQuestionList([]);
+      setQuestionData({});
     }
 
     const updates = {};
@@ -341,6 +346,7 @@ const EditExamDetails = () => {
   const deleteQuestion = (questionNumber) => {
     if (questionNumber === question) {
       setQuestion("");
+      setQuestionData({});
     }
     const updates = {};
     questionList.splice(questionList.indexOf(questionNumber), 1);

@@ -77,6 +77,9 @@
 .hidden {
   display: none !important;
 }
+p {
+  margin: 0;
+}
 
 .hor-line {
   width: 100%;
@@ -108,6 +111,19 @@
   position: fixed;
 }
 
+.but-inline-right {
+  float: right;
+  background: dodgerblue;
+  color: white;
+  border-radius: 4px;
+  padding: 6px 12px;
+  border: none;
+  font-size: 1rem;
+  margin-left: auto;
+  margin-right: 0;
+  display: block;
+}
+
 .but-next {
   background: dodgerblue;
   color: white;
@@ -128,6 +144,19 @@
   border: none;
   font-size: 1.125rem;
   bottom: 20px;
+  right: 50px;
+  display: block;
+  position: fixed;
+}
+
+.but-next-bottom-2 {
+  background: dodgerblue;
+  color: white;
+  border-radius: 5px;
+  padding: 16px 32px;
+  border: none;
+  font-size: 1.125rem;
+  bottom: 80px;
   right: 50px;
   display: block;
   position: fixed;

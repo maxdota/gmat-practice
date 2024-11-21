@@ -12,7 +12,6 @@ const list = [
   { value: 'verb', label: 'Verbal Reasoning' },
   { value: 'data', label: 'Data Insights' }
 ];
-
 const SelectOrder = () => {
   Modal.appElement = "#root";
   const navigate = useNavigate()
@@ -32,7 +31,6 @@ const SelectOrder = () => {
   const onChange3 = (e) => {
     setThird(e.value)
   };
-
   function ListOption() {
     return <>
       <Select
@@ -81,8 +79,6 @@ const SelectOrder = () => {
       <ListOption/>
       <button className="but-next" onClick={ onNext }>NEXT</button>
     </div>
-
-
     <Modal
       className="warn-modal"
       isOpen={displayModal}
@@ -94,7 +90,6 @@ const SelectOrder = () => {
       <div className="description-text">Please select the order in which the exam sections are to be administered</div>
       <button className="but-ok" onClick={ onCloseModal }>OK</button>
     </Modal>
-
   </div>;
 };
 export default SelectOrder;

@@ -4,20 +4,22 @@ import React, { useEffect, useState } from "react";
 import Select, { OnChangeValue, ActionMeta } from 'react-select';
 import { useNavigate } from "react-router-dom";
 import Navbar from "../elements/Navbar";
-import '../css/SecData.css.scss';
+import '../css/SecQuestion.css.scss';
 import Modal from 'react-modal';
 
-const SecData = () => {
-  console.log("data: " + localStorage.getItem('test_e_data'));
+const SecQuestion = () => {
+  console.log("data: " + localStorage.getItem('review_question'));
 
   Modal.appElement = "#root";
   const navigate = useNavigate();
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    document.getElementById("ins_desc").innerHTML = localStorage.getItem('test_e_data');
+    document.getElementById("ins_desc").innerHTML = localStorage.getItem('review_question');
   });
   const onNext = () => {
+    const value1 = document.getElementById("cars").value;
+    console.log("value 1: " + value1);
   };
   const onCloseModal = () => {
     setDisplayModal(false);
@@ -25,7 +27,7 @@ const SecData = () => {
 
   console.log(localStorage.getItem('ecode'));
 
-  return <div className="sec-data">
+  return <div className="sec-question">
     <Navbar/>
     <div className="mid-cont">
       <div className="instruction-cont">
@@ -41,4 +43,4 @@ const SecData = () => {
     </Modal>
   </div>;
 };
-export default SecData;
+export default SecQuestion;
