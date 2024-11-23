@@ -2,22 +2,26 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import Select, { OnChangeValue, ActionMeta } from 'react-select';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../elements/Navbar";
 import '../css/SecQuestion.css.scss';
 import Modal from 'react-modal';
 
 const SecQuestion = () => {
-  console.log("data: " + localStorage.getItem('review_question'));
-
+  const search = useLocation().search;
+  let params = new URLSearchParams(search);
+  const isPreview = params.get("preview");
   Modal.appElement = "#root";
   const navigate = useNavigate();
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    document.getElementById("ins_desc").innerHTML = localStorage.getItem('review_question');
+    if (isPreview) {
+      document.getElementById("ins_desc").innerHTML = localStorage.getItem('review_question');
+    }
   });
   const onNext = () => {
+    if (isPreview) return
     const value1 = document.getElementById("cars").value;
     console.log("value 1: " + value1);
   };
@@ -30,7 +34,7 @@ const SecQuestion = () => {
   return <div className="sec-question">
     <Navbar/>
     <div className="mid-cont">
-      <div className="instruction-cont">
+      <div className="instruction-cont ck-content">
         <div id="ins_desc" className="instruction-desc"/>
       </div>
       <button className="but-next-bottom" onClick={ onNext }>NEXT</button>

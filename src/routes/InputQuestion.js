@@ -51,7 +51,7 @@ import {
   TextTransformation,
   TodoList,
   Underline,
-  Undo
+  Undo, Base64UploadAdapter, ImageResizeHandles, ImageResizeEditing, Image
 } from 'ckeditor5';
 import SimpleBox from "../elements/ckeditor/simplebox";
 
@@ -62,7 +62,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../elements/Navbar";
 import '../css/InputQuestion.css.scss';
 import Modal from "react-modal";
-import Placeholder from "../elements/ckeditor/placeholder";
 import InlineOption from "../elements/ckeditor/inlineoption";
 
 const firebaseConfig = {
@@ -131,6 +130,7 @@ const InputQuestion = () => {
         '|',
         'specialCharacters',
         'insertImageViaUrl',
+        'uploadImage',
         'insertTable',
         '|',
         'alignment',
@@ -144,6 +144,7 @@ const InputQuestion = () => {
       shouldNotGroupWhenFull: false
     },
     plugins: [
+      Base64UploadAdapter,
       AccessibilityHelp,
       Alignment,
       Autoformat,
@@ -166,6 +167,7 @@ const InputQuestion = () => {
       ImageTextAlternative,
       ImageToolbar,
       ImageUpload,
+      Image, ImageResizeEditing, ImageResizeHandles,
       Indent,
       IndentBlock,
       Italic,
@@ -288,9 +290,10 @@ const InputQuestion = () => {
   };
   const onPreview = () => {
     if (inputEditor === undefined || inputEditor === null) return;
-    writeFirebaseData(inputEditor.getData());
-    localStorage.setItem('review_question', inputEditor.getData());
-    navigate('/sec-question');
+    let data = inputEditor.getData();
+    writeFirebaseData(data);
+    localStorage.setItem('review_question', data);
+    navigate('/sec-question?preview=true');
   };
 
   function readFirebaseData(e) {

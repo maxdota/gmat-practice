@@ -238,8 +238,8 @@ const InputDescription = () => {
   const onUpdate = () => {
     if (editor === undefined) return;
     console.log("" + Object.getOwnPropertyNames(editorRef.current));
-    localStorage.setItem('test_e_data', editor.getData());
-    navigate("/sec-data");
+    localStorage.setItem('preview_instruction', editor.getData());
+    navigate("/sec-data?preview=true");
   };
   return (
     <div>

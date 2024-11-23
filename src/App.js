@@ -18,12 +18,13 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={ <AdminDashboard/> }/>
+        <Route path="/" element={ <SelectExamCode/> }/>
         <Route path="/select-exam-code" element={ <SelectExamCode/> }/>
         <Route path="/select-order" element={ <SelectOrder/> }/>
         <Route path="/sec-data" element={ <SecData/> }/>
         <Route path="/input-description" element={ <InputDescription/> }/>
         <Route path="/admin-dashboard" element={ <AdminDashboard/> }/>
+        <Route path="/ad" element={ <AdminDashboard/> }/>
         <Route path="/edit-exam-details" element={ <EditExamDetails/> }/>
         <Route path="/edit-exam-instructions" element={ <EditExamInstructions/> }/>
         <Route path="/input-instruction" element={ <InputInstruction/> }/>

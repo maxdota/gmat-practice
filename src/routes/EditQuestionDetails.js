@@ -327,7 +327,7 @@ const EditQuestionDetails = () => {
             <ListOption2/>
           </div>
         </div>
-        <div className="content-cont">
+        <div className="content-cont ck-content">
           <h2 className="edit-label">Question Content</h2>
           <button className="but-inline-right" onClick={ onEditContent }>EDIT</button>
           <div className="info-cont" dangerouslySetInnerHTML={ { __html: questionContent } }/>

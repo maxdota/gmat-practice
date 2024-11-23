@@ -2,22 +2,26 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import Select, { OnChangeValue, ActionMeta } from 'react-select';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../elements/Navbar";
 import '../css/SecData.css.scss';
 import Modal from 'react-modal';
 
 const SecData = () => {
-  console.log("data: " + localStorage.getItem('test_e_data'));
-
   Modal.appElement = "#root";
+  const search = useLocation().search;
+  let params = new URLSearchParams(search);
+  const isPreview = params.get("preview");
   const navigate = useNavigate();
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    document.getElementById("ins_desc").innerHTML = localStorage.getItem('test_e_data');
+    if (isPreview) {
+      document.getElementById("ins_desc").innerHTML = localStorage.getItem('preview_instruction');
+    }
   });
   const onNext = () => {
+    if (isPreview) return
   };
   const onCloseModal = () => {
     setDisplayModal(false);
