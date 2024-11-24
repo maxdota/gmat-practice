@@ -1,0 +1,40 @@
+.question {
+  p {
+    margin: 0;
+  }
+  .mid-cont {
+    margin-top: 40px;
+    display: block;
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .data-top {
+    margin-top: 40px;
+    padding: 3px 20px 5px 20px;
+    background: slategray;
+    color: white;
+  }
+  .remaining-time {
+    color: gold;
+    float: right;
+    display: flex;
+  }
+  .clock-image {
+    width: 15px;
+    height: 15px;
+    margin-right: 7px;
+    margin-top: 4px;
+  }
+  .remaining-text {
+  }
+  .calculator-image {
+    width: 30px;
+    height: 30px;
+    margin-left: 15px;
+  }
+}
+.ReactModalPortal {
+  position: absolute;
+  z-index: 2;
+}

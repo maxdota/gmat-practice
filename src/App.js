@@ -13,6 +13,8 @@ import InputInstruction from "./routes/InputInstruction";
 import InputQuestion from "./routes/InputQuestion";
 import SecQuestion from "./routes/SecQuestion";
 import EditQuestionDetails from "./routes/EditQuestionDetails";
+import Instructions from "./routes/Instructions";
+import Question from "./routes/Question";
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
         <Route path="/" element={ <SelectExamCode/> }/>
         <Route path="/select-exam-code" element={ <SelectExamCode/> }/>
         <Route path="/select-order" element={ <SelectOrder/> }/>
+        <Route path="/instructions" element={ <Instructions/> }/>
         <Route path="/sec-data" element={ <SecData/> }/>
         <Route path="/input-description" element={ <InputDescription/> }/>
         <Route path="/admin-dashboard" element={ <AdminDashboard/> }/>
@@ -30,6 +33,7 @@ function App() {
         <Route path="/input-instruction" element={ <InputInstruction/> }/>
         <Route path="/input-question" element={ <InputQuestion/> }/>
         <Route path="/edit-question-details" element={ <EditQuestionDetails/> }/>
+        <Route path="/question" element={ <Question/> }/>
         <Route path="/sec-question" element={ <SecQuestion/> }/>
         <Route path="/about" element={ <About/> }/>
       </Routes>
