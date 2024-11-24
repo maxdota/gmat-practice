@@ -454,8 +454,8 @@ const EditExamDetails = () => {
           </div>
         </div>
         <div className="edit-question-cont">
-          <h2 className="edit-label">Question</h2>
           <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddQuestion }/>
+          <h2 className="edit-label">Question</h2>
           <div className="ecode-opt-cont">
             <ListOptionQuestion/>
           </div>

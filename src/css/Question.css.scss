@@ -3,14 +3,16 @@
     margin: 0;
   }
   .mid-cont {
-    margin-top: 40px;
     display: block;
     width: 90vw;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 76px auto 90px;
   }
   .data-top {
-    margin-top: 40px;
+    z-index: 1;
+    position: fixed;
+    top: 40px;
+    left: 0;
+    right: 0;
     padding: 3px 20px 5px 20px;
     background: slategray;
     color: white;

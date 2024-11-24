@@ -325,8 +325,8 @@ const InputInstruction = () => {
         </div>
       </div>
       <button className="but-back-bottom" onClick={ onBack }>BACK</button>
-      <button className="but-next-bottom" onClick={ onSave }>SAVE</button>
-      <button className="but-next-bottom-2" onClick={ onPreview }>SAVE & PREVIEW</button>
+      <button className="but-next-bottom" onClick={ onPreview }>SAVE & PREVIEW</button>
+      <button className="but-next-bottom-2" onClick={ onSave }>SAVE</button>
     </div>
   );
 }

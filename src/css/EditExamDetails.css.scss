@@ -9,7 +9,7 @@
 
   .ecode-opt-cont {
     width: 120px;
-    height: 60vh;
+    height: calc(100vh - 280px);
     overflow: auto;
     overflow-x: hidden;
     border: 1px solid black;
@@ -20,7 +20,7 @@
 
   .section-opt-cont {
     width: 120px;
-    height: 60vh;
+    height: calc(100vh - 280px);
     overflow: auto;
     overflow-x: hidden;
     border: 1px solid black;
@@ -30,8 +30,8 @@
   }
 
   .info-cont {
-    width: 550px;
-    height: 60vh;
+    width: 530px;
+    height: calc(100vh - 280px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
@@ -56,7 +56,7 @@
   }
 
   .edit-question-cont {
-    width: 150px;
+    width: 165px;
     margin-left: 50px;
   }
 
