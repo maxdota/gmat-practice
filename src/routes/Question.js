@@ -156,7 +156,7 @@ const Question = () => {
       <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
     </div>
     <ReactModal
-      left={ 1000 }
+      left={ 900 }
       top={ 70 }
       initWidth={ 260 }
       initHeight={ 450 }

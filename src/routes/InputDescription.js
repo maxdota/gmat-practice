@@ -239,7 +239,7 @@ const InputDescription = () => {
     if (editor === undefined) return;
     console.log("" + Object.getOwnPropertyNames(editorRef.current));
     localStorage.setItem('preview_instruction', editor.getData());
-    navigate("/sec-data?preview=true");
+    navigate("/instructions?preview=true");
   };
   return (
     <div>

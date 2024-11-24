@@ -293,7 +293,7 @@ const InputQuestion = () => {
     let data = inputEditor.getData();
     writeFirebaseData(data);
     localStorage.setItem('review_question', data);
-    navigate('/sec-question?preview=true');
+    navigate('/question?preview=true');
   };
 
   function readFirebaseData(e) {

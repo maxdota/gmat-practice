@@ -280,7 +280,7 @@ const InputInstruction = () => {
     let data = inputEditor.getData();
     localStorage.setItem('preview_instruction', data);
     writeInstruction(data);
-    navigate("/sec-data?preview=true");
+    navigate("/instructions?preview=true");
   };
 
   function readFirebaseData(e) {
