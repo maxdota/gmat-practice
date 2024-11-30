@@ -43,6 +43,7 @@ const EditQuestionDetails = () => {
     { value: 'reuse', label: 'Reuse Previous Question Data' },
   ];
   const RIGHT_TYPE_LIST = [
+    { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
     { value: '2_choice_table', label: '2 Choices Table' },
   ];
@@ -52,6 +53,9 @@ const EditQuestionDetails = () => {
   const section = params.get("section");
   const question = params.get("question");
   const arrangement = params.get("arrangement");
+  const centerType = params.get("center_type");
+  const leftType = params.get("left_type");
+  const rightType = params.get("right_type");
   const sectionName = SECTION_LIST.filter(item => item.value === section)[0].label;
   const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + question;
   const [displayInputModal, setDisplayInputModal] = useState({ display: false });
@@ -89,6 +93,11 @@ const EditQuestionDetails = () => {
       readFirebaseData();
     }
   });
+
+  function getLabelFromList(list, value) {
+    return list.filter(item => item.value === value)[0].label;
+  }
+
   function ListOption1() {
     const list = op1Data.optionList === undefined ? [] : op1Data.optionList
     return list.map(item => {
@@ -112,6 +121,7 @@ const EditQuestionDetails = () => {
       }
     );
   }
+
   function ListOption2() {
     const list = op2Data.optionList === undefined ? [] : op2Data.optionList
     return list.map(item => {
@@ -135,6 +145,7 @@ const EditQuestionDetails = () => {
       }
     );
   }
+
   const onBack = () => {
     navigate(-1);
   };
@@ -152,7 +163,7 @@ const EditQuestionDetails = () => {
     // localStorage.setItem('data', JSON.stringify(dataObject));
     // const storedData = JSON.parse(localStorage.getItem('data'));
 
-    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${arrangement}`);
+    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ arrangement }`);
   };
   const onAddOption1 = () => {
     let missingNumber = getMissingNumber(op1Data.optionList);
@@ -203,6 +214,7 @@ const EditQuestionDetails = () => {
       data: data
     });
   };
+
   function readFirebaseData() {
     const path = questionPath + "/" + arrangement + "/answer_data_1";
     const answerDataRef = ref(database, path);
@@ -239,6 +251,7 @@ const EditQuestionDetails = () => {
       onlyOnce: true
     });
   }
+
   const writeCheckOp1Data = (data) => {
     const path = questionPath + "/" + arrangement + "/answer_data_1";
     const updates = {};
@@ -311,7 +324,7 @@ const EditQuestionDetails = () => {
     <Navbar/>
     <div className="mid-cont">
       <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
-      <h3>Type: Inline Option</h3>
+      <p>Type: { arrangement === 'center' ? getLabelFromList(CENTER_TYPE_LIST, centerType) : `${ getLabelFromList(LEFT_TYPE_LIST, leftType) } - ${ getLabelFromList(RIGHT_TYPE_LIST, rightType) }` }</p>
       <div className="edit-cont">
         <div className="edit-question-cont">
           <h2 className="edit-label">Option 1</h2>

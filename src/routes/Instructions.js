@@ -46,7 +46,8 @@ const Instructions = () => {
     progress.startTime = Date.now();
     localStorage.removeItem('remaining_time');
     localStorage.setItem('progress', JSON.stringify(progress));
-    navigate("/question", { replace: true });
+    navigate("/question", { replace: false });
+    // navigate("/question", { replace: true });
   };
   const onCloseModal = () => {
     setDisplayModal(false);
@@ -58,7 +59,6 @@ const Instructions = () => {
 
   function readFirebaseData() {
     const path = process.env.REACT_APP_FB_ROOT_DATA + '/instructions/' + progress[progress.step];
-    console.log("path: " + path);
     onValue(ref(database, path), (snapshot) => {
       const raw = snapshot.val();
       document.getElementById("ins_desc").innerHTML = raw ? raw : '';
@@ -72,6 +72,8 @@ const Instructions = () => {
         number: 1,
         arrangement: raw['arrangement'],
         center: raw['center'],
+        left: raw['left'],
+        right: raw['right'],
       }
       localStorage.setItem('question', JSON.stringify(questionData));
     }, {

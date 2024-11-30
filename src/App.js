@@ -7,7 +7,7 @@ import SelectExamCode from "./routes/SelectExamCode";
 import SecData from "./routes/SecData";
 import AdminDashboard from "./routes/AdminDashboard";
 import EditExamDetails from "./routes/EditExamDetails";
-import InputDescription from "./routes/InputDescription";
+import InputSample from "./routes/InputSample";
 import EditExamInstructions from "./routes/EditExamInstructions";
 import InputInstruction from "./routes/InputInstruction";
 import InputQuestion from "./routes/InputQuestion";
@@ -15,6 +15,8 @@ import SecQuestion from "./routes/SecQuestion";
 import EditQuestionDetails from "./routes/EditQuestionDetails";
 import Instructions from "./routes/Instructions";
 import Question from "./routes/Question";
+import EditQuestionDetailsLeftRight from "./routes/EditQuestionDetailsLeftRight";
+import InputDescription from "./routes/InputDescription";
 
 function App() {
   return (
@@ -25,14 +27,15 @@ function App() {
         <Route path="/select-order" element={ <SelectOrder/> }/>
         <Route path="/instructions" element={ <Instructions/> }/>
         <Route path="/sec-data" element={ <SecData/> }/>
-        <Route path="/input-description" element={ <InputDescription/> }/>
         <Route path="/admin-dashboard" element={ <AdminDashboard/> }/>
         <Route path="/ad" element={ <AdminDashboard/> }/>
         <Route path="/edit-exam-details" element={ <EditExamDetails/> }/>
         <Route path="/edit-exam-instructions" element={ <EditExamInstructions/> }/>
         <Route path="/input-instruction" element={ <InputInstruction/> }/>
         <Route path="/input-question" element={ <InputQuestion/> }/>
+        <Route path="/input-description" element={ <InputDescription/> }/>
         <Route path="/edit-question-details" element={ <EditQuestionDetails/> }/>
+        <Route path="/edit-question-details-left-right" element={ <EditQuestionDetailsLeftRight/> }/>
         <Route path="/question" element={ <Question/> }/>
         <Route path="/sec-question" element={ <SecQuestion/> }/>
         <Route path="/about" element={ <About/> }/>

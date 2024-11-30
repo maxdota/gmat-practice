@@ -25,6 +25,7 @@ const SECTION_LIST = [
   { value: 'data', label: 'Data Insights' }
 ];
 const Question = () => {
+  const LIST_SEP = ",_";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   const search = useLocation().search;
@@ -39,9 +40,13 @@ const Question = () => {
     localStorage.getItem('remaining_time') === null ? (45 * 60) : parseInt(localStorage.getItem('remaining_time'))
   ); //in seconds
   const [questionNumber, setQuestionNumber] = useState(0);
+  const [sortData, setSortData] = useState({ list: [], currentSort: "" });
+  const [yesNoData, setYesNoData] = useState({ optionList: [], options: [], userOptions: {} });
+  // this questionData is always data of the next question after loading next
   const [questionData, setQuestionData] = useState(JSON.parse(localStorage.getItem('question')));
+  const [currentData, setCurrentData] = useState({});
   const [endSection, setEndSection] = useState(false);
-  // const [loadingQuestionNumber, setQuestionData] = useState(0);
+  const [sectionProgress, setSectionProgress] = useState([]);
   const timerToString = () => {
     let hours = ('0' + Math.floor(timer / 3600)).slice(-2);
     let minutes = ('0' + Math.floor(timer / 60)).slice(-2);
@@ -56,6 +61,7 @@ const Question = () => {
       setTimeout(() => {
         setTimer(timer - 1);
         localStorage.setItem('remaining_time', (timer - 1).toString());
+      // }, 100000)
       }, 1000)
     }
   }, [timer]);
@@ -74,14 +80,14 @@ const Question = () => {
     if (firstLoad) {
       setFirstLoad(false);
       if (isPreview) {
-        document.getElementById("ins_desc").innerHTML = localStorage.getItem('review_question');
+        document.getElementsByClassName("center-cont")[0].innerHTML = localStorage.getItem('review_question');
       } else {
         if (validateProgress()) {
           setQuestionNumber(1);
         }
       }
     }
-  });
+  }, [firstLoad]);
   const onCloseConfirmModal = () => {
     setDisplayConfirmModal({ display: false });
   };
@@ -99,8 +105,24 @@ const Question = () => {
     return true;
   }
 
-  function displayQuestionContent() {
-    document.getElementById("ins_desc").innerHTML = questionData['center']['content'];
+  function ListYesNoOption() {
+    const list = yesNoData.optionList === undefined ? [] : yesNoData.optionList
+    return list.map(item => {
+        return <div key={ item } className="yes-no-row">
+          <label className="yes-no-radio">
+            <input type="radio" name={ "yes-no-option-" + item } value={ item + "-yes" }
+                   checked={ yesNoData.userOptions[item] === 'true' } onChange={ () => "" }
+                   onClick={ () => onSelectYesNo(item, 'true') }/>
+          </label>
+          <label className="yes-no-radio-2">
+            <input type="radio" name={ "yes-no-option-" + item } value={ item + "-no" }
+                   checked={ yesNoData.userOptions[item] === 'false' } onChange={ () => "" }
+                   onClick={ () => onSelectYesNo(item, 'false') }/>
+          </label>
+          <div className="yes-no-text">{ yesNoData.options[item].content }</div>
+        </div>
+      }
+    );
   }
 
   function loadNextQuestion() {
@@ -110,16 +132,30 @@ const Question = () => {
     const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + progress.ecode + "/" + section + "/questions/" + (questionNumber + 1);
     onValue(ref(database, questionPath), (snapshot) => {
       const raw = snapshot.val();
-      const questionData = {
+      const newQuestionData = {
         number: questionNumber + 1,
         arrangement: raw['arrangement'],
         center: raw['center'],
+        left: raw['left'],
+        right: raw['right'],
       }
-      setQuestionData(questionData);
-    }, {
-      onlyOnce: true
-    });
+      setQuestionData(newQuestionData);
+    }, { onlyOnce: true });
   }
+
+  function getLabelFromList(list, value) {
+    return list.filter(item => item.value === value)[0].label;
+  }
+
+  const onChangeSort = (e) => {
+    setSortData({ list: sortData.list, currentSort: e.value })
+    document.getElementsByClassName("sort-content")[0].innerHTML =
+      currentData['left']['options'][getLabelFromList(sortData.list, e.value)]['content'];
+  };
+  const onSelectYesNo = (key, value) => {
+    yesNoData.userOptions[key] = value;
+    setYesNoData({ optionList: yesNoData.optionList, options: yesNoData.options, userOptions: yesNoData.userOptions });
+  };
 
   const onNext = () => {
     setDisplayConfirmModal({
@@ -129,29 +165,130 @@ const Question = () => {
       action: "continue",
     });
   };
+  const updateUserAnswer = () => {
+    const userQuestion = {};
+    const userAnswer = {};
+    const arrangement = currentData['arrangement'];
+    userQuestion.arrangement = arrangement;
+    if (arrangement === 'center') {
+      const centerType = currentData['center']['type'];
+      userQuestion.type = centerType;
+      if (centerType === "inline_option") {
+        userQuestion.correct_option_1 = currentData['center']['answer_data_1']['correct_option'];
+        userQuestion.correct_option_2 = currentData['center']['answer_data_2']['correct_option'];
+        userAnswer.option_1 = document.getElementById("option_1").value;
+        userAnswer.option_2 = document.getElementById("option_2").value;
+      }
+    } else {
+      const rightType = currentData['right']['type'];
+      userQuestion.type = rightType;
+      userQuestion.options = {};
+      userAnswer.options = {};
+      if (rightType === "yes_no") {
+        currentData['right']['option_list'].split(LIST_SEP).forEach((key, index) => {
+          console.log("key: " + key);
+          console.log("current data");
+          console.log(currentData);
+          console.log("yesNoData data");
+          console.log(yesNoData);
+          userQuestion.options[key] = currentData['right']['options'][key]['is_correct'];
+          userAnswer.options[key] = yesNoData.userOptions[key];
+        });
+      }
+    }
+    sectionProgress.push({ userQuestion: userQuestion, userAnswer: userAnswer });
+    setSectionProgress(sectionProgress);
+    console.log(sectionProgress);
+  }
   const confirmNext = () => {
     if (isPreview) return;
+    updateUserAnswer();
     if (exam[section].totalQuestion === questionNumber) {
       setEndSection(true);
       return;
     }
     setQuestionNumber(questionNumber + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  function displayQuestionContent() {
+    if (questionData['arrangement'] === 'center') {
+      document.getElementsByClassName("center-content")[0].innerHTML = questionData['center']['content'];
+      document.getElementsByClassName("center-cont")[0].className = "center-cont";
+      document.getElementsByClassName("left-right-cont")[0].className = "left-right-cont hidden";
+    } else {
+      const leftData = questionData['left'];
+      const rightData = questionData['right'];
+      document.getElementsByClassName("center-cont")[0].className = "center-cont hidden";
+      document.getElementsByClassName("left-right-cont")[0].className = "left-right-cont";
+      document.getElementsByClassName("left-description")[0].innerHTML = leftData['content'];
+      document.getElementsByClassName("right-description")[0].innerHTML = rightData['content'];
+      const list = [];
+      leftData['option_list'].split(LIST_SEP).forEach((key, index) => {
+        list.push({ value: index.toString(), label: key })
+      })
+      setSortData({ list: list, currentSort: "0" });
+      document.getElementsByClassName("sort-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
+      setYesNoData({
+        optionList: rightData['option_list'].split(LIST_SEP),
+        options: rightData['options'],
+        userOptions: {}
+      })
+    }
+    setCurrentData({
+      number: questionData.number,
+      arrangement: questionData.arrangement,
+      center: questionData.center,
+      left: questionData.left,
+      right: questionData.right
+    });
+    console.log(progress);
+  }
+
   return <div className="question">
     <Navbar/>
     <div className="data-top">
-      Exam { progress.ecode } - { SECTION_LIST.filter(option => option.value === section)[0].label } -
-      Question <b>{ questionNumber }/{ exam[section].totalQuestion }</b>
+      <div className="data-top-text">
+        Exam { progress.ecode } - { SECTION_LIST.filter(option => option.value === section)[0].label } -
+        Question <b>{ questionNumber }/{ exam[section].totalQuestion }</b>
+      </div>
       <img className="calculator-image" src={ process.env.PUBLIC_URL + "/icon_calculator.png" }
            onClick={ () => setDisplayCalculatorModal({ display: true }) }/>
       <div className="remaining-time">
+        <div className="data-top-text">Remaining Time:&nbsp;<b>{ timerToString() }</b></div>
         <img className="clock-image" src={ process.env.PUBLIC_URL + "/icon_clock.png" }/>
-        Remaining Time:&nbsp;<b>{ timerToString() }</b>
       </div>
     </div>
     <div className="mid-cont">
-      <div className="instruction-cont ck-content">
-        <div id="ins_desc" className="instruction-desc"/>
+      <div className="ck-content mid-inner-cont">
+        <div className="center-cont hidden">
+          <div className="center-content"/>
+        </div>
+        <div className="left-right-cont hidden">
+          <div className="left-cont">
+            <div className="left-description"/>
+            <div className="sort-cont">
+              <b>Sort By</b>
+              <Select
+                className="sort-select"
+                onChange={ onChangeSort }
+                options={ sortData.list }
+                value={ sortData.list.filter(option => option.value === sortData.currentSort) }/>
+              <div className="sort-content"/>
+            </div>
+          </div>
+          <div className="ver-line"/>
+          <div className="right-cont">
+            <div className="right-description"/>
+            <div className="yes-no-cont">
+              <div className="yes-no-label-row">
+                <label className="yes-no-radio">Yes</label>
+                <label className="yes-no-radio-2">No</label>
+              </div>
+              <ListYesNoOption/>
+            </div>
+          </div>
+        </div>
       </div>
       <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
     </div>

@@ -36,15 +36,17 @@
   right: 0;
   background: dodgerblue;
   font-size: 1.125rem;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
   height: 40px;
 
   .nav-label {
     display: inline-flex;
     color: white;
     text-decoration: none;
-    padding-top: 8px;
+    padding-top: 6px;
+    padding-bottom: 2px;
+    padding-left: 4px;
   }
 
   .nav-image {
@@ -54,6 +56,12 @@
     position: absolute;
     right: 10px;
     top: 2px;
+  }
+
+  .logo-image {
+    width: 30px;
+    height: 30px;
+    margin-top: -8px;
   }
 }
 
@@ -79,7 +87,13 @@
 }
 
 p {
-  margin: 0;
+  margin: 0 !important;
+}
+
+.ver-line {
+  width: 1px;
+  //height: 100vh;
+  background: black;
 }
 
 .hor-line {
@@ -352,7 +366,6 @@ p {
 
 .ck-content {
   font-family: 'Lato';
-  line-height: 1.6;
   word-break: break-word;
 }
 

@@ -3,30 +3,43 @@
     margin: 0;
   }
   .mid-cont {
-    display: block;
-    width: 90vw;
-    margin: 76px auto 90px;
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 76px;
+  }
+  .mid-inner-cont {
+    display: flex;
+    width: 100vw;
   }
   .data-top {
     z-index: 1;
+    display: flex;
     position: fixed;
     top: 40px;
     left: 0;
     right: 0;
-    padding: 3px 20px 5px 20px;
-    background: slategray;
+    padding: 3px 20px;
+    background: black;
     color: white;
+    align-items: center;
   }
   .remaining-time {
     color: gold;
-    float: right;
     display: flex;
+    flex-grow: 1;
+    flex-direction: row-reverse;
   }
   .clock-image {
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
     margin-right: 7px;
-    margin-top: 4px;
+  }
+  .data-top-text {
+    margin-top: -2px;
   }
   .remaining-text {
   }
@@ -34,6 +47,79 @@
     width: 30px;
     height: 30px;
     margin-left: 15px;
+  }
+  .center-cont {
+    overflow: auto;
+    padding-bottom: 90px;
+    flex: 1;
+  }
+  .center-content {
+    width: 90vw;
+    margin: 20px auto 0;
+  }
+  .left-right-cont {
+    display: flex;
+  }
+  .left-cont {
+    overflow: auto;
+    margin-bottom: 90px;
+    flex: 0.9;
+  }
+  .right-cont {
+    overflow: auto;
+    padding-bottom: 90px;
+    flex: 1;
+  }
+  .left-description {
+    margin: 10px 20px;
+  }
+  .right-description {
+    margin: 10px 20px;
+  }
+  .sort-cont {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .sort-select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .yes-no-cont {
+    margin: 20px;
+  }
+  .yes-no-label-row {
+    display: flex;
+    width: fit-content;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+  }
+  .yes-no-row {
+    display: flex;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+  .yes-no-row:last-child {
+    display: flex;
+    border: 1px solid black;
+  }
+  .yes-no-radio {
+    width: 50px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .yes-no-radio-2 {
+    width: 50px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+  .yes-no-text {
+    flex: 1;
+    padding: 5px 10px;
   }
 }
 .ReactModalPortal {

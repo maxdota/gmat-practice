@@ -49,6 +49,7 @@ const EditExamDetails = () => {
     { value: 'reuse', label: 'Reuse Previous Question Data' },
   ];
   const RIGHT_TYPE_LIST = [
+    { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
     { value: '2_choice_table', label: '2 Choices Table' },
   ];
@@ -179,8 +180,15 @@ const EditExamDetails = () => {
       });
       return;
     }
-    navigate(`/edit-question-details?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ questionData.arrangement }`);
-    // navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }`);
+    const typeParams = questionData.arrangement === 'center' ?
+      `&center_type=${ questionData.centerType }` :
+      `&left_type=${ questionData.leftType }&right_type=${ questionData.rightType }`
+    const params = `?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ questionData.arrangement }${ typeParams }`;
+    if (questionData.arrangement === 'center') {
+      navigate(`/edit-question-details${ params }`);
+    } else {
+      navigate(`/edit-question-details-left-right${ params }`);
+    }
   };
 
   const onDeleteExam = (data) => {

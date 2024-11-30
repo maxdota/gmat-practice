@@ -144,23 +144,23 @@ class CalculatorView extends React.Component {
 
       case "1/x":
         // Get Values in FullText and 1/parse(FullText)
-        try {
-          let fullTextNew = "(1/(" + fullText + "))";
-          let finalResult = this.parseCalculate(fullTextNew);
-          this.setState({ fullText: fullTextNew, resultText: finalResult.toString() });
-        } catch (error) {
-          this.setState({ fullText: "", resultText: "" });
-        }
+        // try {
+        //   let fullTextNew = "(1/(" + fullText + "))";
+        //   let finalResult = this.parseCalculate(fullTextNew);
+        //   this.setState({ fullText: fullTextNew, resultText: finalResult.toString() });
+        // } catch (error) {
+        //   this.setState({ fullText: "", resultText: "" });
+        // }
         break;
 
       case "x^2":
-        try {
-          let fullTextNew = "(" + fullText + ")^2";
-          let finalResult = this.parseCalculate(fullTextNew);
-          this.setState({ fullText: fullTextNew, resultText: finalResult.toString() });
-        } catch (error) {
-          this.setState({ fullText: "", resultText: "" });
-        }
+        // try {
+        //   let fullTextNew = "(" + fullText + ")^2";
+        //   let finalResult = this.parseCalculate(fullTextNew);
+        //   this.setState({ fullText: fullTextNew, resultText: finalResult.toString() });
+        // } catch (error) {
+        //   this.setState({ fullText: "", resultText: "" });
+        // }
         break;
 
       case "+-":
@@ -340,7 +340,7 @@ class CalculatorView extends React.Component {
                                       onClick={ () => this.digitClick(6) } textValue="6"/>
                     <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold"
                                       onClick={ () => this.operationClick('*') } textValue="×"/>
-                    <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold"
+                    <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold calc-hidden"
                                       onClick={ () => this.functionalButtonClick('x^2') } textValue="x^2"/>
                   </div>
 
@@ -353,7 +353,7 @@ class CalculatorView extends React.Component {
                                       onClick={ () => this.digitClick(3) } textValue="3"/>
                     <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold"
                                       onClick={ () => this.operationClick('-') } textValue="-"/>
-                    <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold"
+                    <CalculatorButton buttonClass="btn btn-primary btn-digit-operation btn-operation text-bold calc-hidden"
                                       onClick={ () => this.functionalButtonClick('1/x') } textValue="1/x"/>
                   </div>
 

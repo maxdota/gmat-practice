@@ -1,31 +1,18 @@
-.sec-data {
-  h2 {
-    margin-bottom: 40px;
-  }
-
+.input-description {
   .mid-cont {
     margin-top: 80px;
     display: block;
-    margin-left: 40px;
-    margin-right: 40px;
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
   }
-
-  .css-1dimb5e-singleValue, .css-olqui2-singleValue {
-    font-weight: bold;
-    color: black !important;
-  }
-
-  .order-select {
-    margin-bottom: 20px;
-  }
-
-  p {
-    font-size: 17px;
+  .description-text {
     margin-bottom: 25px;
   }
-
-  .instruction-desc {
-    font-size: 20px;
+  .editor-container__editor {
+    max-width: none;
+    min-width: 0;
+    width: 90vw;
     margin-bottom: 85px;
   }
 }
