@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/gmat-practice/static/css/main.4b213b1e.css",
-    "main.js": "/gmat-practice/static/js/main.c7240ab4.js",
+    "main.css": "/gmat-practice/static/css/main.6f2a344e.css",
+    "main.js": "/gmat-practice/static/js/main.ba9efe1c.js",
     "static/js/453.2cb7f062.chunk.js": "/gmat-practice/static/js/453.2cb7f062.chunk.js",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/gmat-practice/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
     "static/media/fontawesome-webfont.eot": "/gmat-practice/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
@@ -9,12 +9,12 @@
     "static/media/fontawesome-webfont.woff?v=4.7.0": "/gmat-practice/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
     "static/media/fontawesome-webfont.woff2?v=4.7.0": "/gmat-practice/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
     "index.html": "/gmat-practice/index.html",
-    "main.4b213b1e.css.map": "/gmat-practice/static/css/main.4b213b1e.css.map",
-    "main.c7240ab4.js.map": "/gmat-practice/static/js/main.c7240ab4.js.map",
+    "main.6f2a344e.css.map": "/gmat-practice/static/css/main.6f2a344e.css.map",
+    "main.ba9efe1c.js.map": "/gmat-practice/static/js/main.ba9efe1c.js.map",
     "453.2cb7f062.chunk.js.map": "/gmat-practice/static/js/453.2cb7f062.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4b213b1e.css",
-    "static/js/main.c7240ab4.js"
+    "static/css/main.6f2a344e.css",
+    "static/js/main.ba9efe1c.js"
   ]
 }
