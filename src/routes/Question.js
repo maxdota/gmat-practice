@@ -42,6 +42,7 @@ const Question = () => {
   const [questionNumber, setQuestionNumber] = useState(0);
   const [sortData, setSortData] = useState({ list: [], currentSort: "" });
   const [yesNoData, setYesNoData] = useState({ optionList: [], options: [], userOptions: {} });
+  const [twoPartData, setTwoPartData] = useState({ optionList: [], options: [] });
   // this questionData is always data of the next question after loading next
   const [questionData, setQuestionData] = useState(JSON.parse(localStorage.getItem('question')));
   const [currentData, setCurrentData] = useState({});
@@ -105,6 +106,26 @@ const Question = () => {
     return true;
   }
 
+  function ListTwoPartOption() {
+    const list = twoPartData.optionList === undefined ? [] : twoPartData.optionList
+    return list.map(item => {
+        return <div key={ item } className="two-part-row">
+          <label className="two-part-radio">
+            <input type="radio" name={ "two-part-option-1" } value={ item + "-yes-1" }
+                   checked={ twoPartData.userOption1 === item } onChange={ () => "" }
+                   onClick={ () => onSelectTwoPart(item, '1') }/>
+          </label>
+          <label className="two-part-radio-2">
+            <input type="radio" name={ "two-part-option-2" } value={ item + "-yes-2" }
+                   checked={ twoPartData.userOption2 === item } onChange={ () => "" }
+                   onClick={ () => onSelectTwoPart(item, '2') }/>
+          </label>
+          <div className="two-part-text">{ twoPartData.options[item] }</div>
+        </div>
+      }
+    );
+  }
+
   function ListYesNoOption() {
     const list = yesNoData.optionList === undefined ? [] : yesNoData.optionList
     return list.map(item => {
@@ -156,6 +177,19 @@ const Question = () => {
     yesNoData.userOptions[key] = value;
     setYesNoData({ optionList: yesNoData.optionList, options: yesNoData.options, userOptions: yesNoData.userOptions });
   };
+  const onSelectTwoPart = (key, optionIndex) => {
+    if (optionIndex === "1") {
+      twoPartData.userOption1 = key;
+    } else {
+      twoPartData.userOption2 = key;
+    }
+    setTwoPartData({
+      optionList: twoPartData.optionList,
+      options: twoPartData.options,
+      userOption1: twoPartData.userOption1,
+      userOption2: twoPartData.userOption2
+    });
+  };
 
   const onNext = () => {
     setDisplayConfirmModal({
@@ -178,6 +212,11 @@ const Question = () => {
         userQuestion.correct_option_2 = currentData['center']['answer_data_2']['correct_option'];
         userAnswer.option_1 = document.getElementById("option_1").value;
         userAnswer.option_2 = document.getElementById("option_2").value;
+      } else if (centerType === "two_part") {
+        userQuestion.correct_option_1 = currentData['center']['answer_data_1']['correct_option'];
+        userQuestion.correct_option_2 = currentData['center']['answer_data_2']['correct_option'];
+        userAnswer.option_1 = twoPartData.userOption1;
+        userAnswer.option_2 = twoPartData.userOption2;
       }
     } else {
       const rightType = currentData['right']['type'];
@@ -213,9 +252,23 @@ const Question = () => {
 
   function displayQuestionContent() {
     if (questionData['arrangement'] === 'center') {
-      document.getElementsByClassName("center-content")[0].innerHTML = questionData['center']['content'];
       document.getElementsByClassName("center-cont")[0].className = "center-cont";
       document.getElementsByClassName("left-right-cont")[0].className = "left-right-cont hidden";
+      document.getElementsByClassName("center-content")[0].innerHTML = questionData['center']['content'];
+
+      console.log("questionData");
+      console.log(questionData);
+      const centerType = questionData['center']['type'];
+      if (centerType === "inline_option") {
+        document.getElementsByClassName("two-part-cont")[0].className = "two-part-cont hidden";
+      } else if (centerType === "two_part") {
+        document.getElementsByClassName("two-part-cont")[0].className = "two-part-cont";
+        const centerData = questionData['center'];
+        setTwoPartData({
+          optionList: centerData['answer_data_1']['option_list'].split(LIST_SEP),
+          options: centerData['answer_data_1']['options'],
+        })
+      }
     } else {
       const leftData = questionData['left'];
       const rightData = questionData['right'];
@@ -263,6 +316,13 @@ const Question = () => {
       <div className="ck-content mid-inner-cont">
         <div className="center-cont hidden">
           <div className="center-content"/>
+          <div className="two-part-cont">
+            <div className="two-part-label-row">
+              <label className="two-part-radio">1</label>
+              <label className="two-part-radio-2">2</label>
+            </div>
+            <ListTwoPartOption/>
+          </div>
         </div>
         <div className="left-right-cont hidden">
           <div className="left-cont">

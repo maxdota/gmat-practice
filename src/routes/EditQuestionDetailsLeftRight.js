@@ -40,6 +40,7 @@ const EditQuestionDetailsLeftRight = () => {
   ];
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
+    { value: 'two_part', label: '2-part Analysis' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },

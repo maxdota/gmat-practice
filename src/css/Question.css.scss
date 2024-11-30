@@ -57,6 +57,10 @@
     width: 90vw;
     margin: 20px auto 0;
   }
+  .two-part-cont {
+    width: 90vw;
+    margin: 20px auto 0;
+  }
   .left-right-cont {
     display: flex;
   }
@@ -105,19 +109,60 @@
   }
   .yes-no-radio {
     width: 50px;
-    padding: 10px;
+    padding: 7px 10px;
     display: flex;
     justify-content: center;
   }
   .yes-no-radio-2 {
     width: 50px;
-    padding: 10px;
+    padding: 7px 10px;
     display: flex;
     justify-content: center;
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
   .yes-no-text {
+    flex: 1;
+    padding: 5px 10px;
+  }
+  .two-part-label-row {
+    display: flex;
+    width: fit-content;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+  }
+  .two-part-row {
+    display: flex;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+  .two-part-row:nth-child(2) {
+     display: flex;
+     border-top: 1px solid black;
+     border-left: 1px solid black;
+     border-right: 1px solid black;
+   }
+  .two-part-row:last-child {
+    display: flex;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+  }
+  .two-part-radio {
+    width: 50px;
+    padding: 7px 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .two-part-radio-2 {
+    width: 50px;
+    padding: 7px 10px;
+    display: flex;
+    justify-content: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+  .two-part-text {
     flex: 1;
     padding: 5px 10px;
   }

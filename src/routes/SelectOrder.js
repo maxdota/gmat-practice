@@ -23,6 +23,7 @@ const list = [
   { value: 'data', label: 'Data Insights' }
 ];
 const SelectOrder = () => {
+  const LIST_SEP = ",_";
   Modal.appElement = "#root";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -65,7 +66,7 @@ const SelectOrder = () => {
       ["data", "quan", "verb"].forEach((section) => {
         const rawSection = raw ? raw[section] : '';
         const questionList = rawSection ? rawSection['question_list'] : '';
-        examData[section] = { questionList: questionList, totalQuestion: questionList.split(",").length }
+        examData[section] = { questionList: questionList, totalQuestion: questionList.split(LIST_SEP).length }
       });
       console.log(examData);
       localStorage.setItem('exam', JSON.stringify(examData));

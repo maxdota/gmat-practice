@@ -53,7 +53,6 @@ import {
   Underline,
   Undo, Base64UploadAdapter, ImageResizeHandles, ImageResizeEditing, Image
 } from 'ckeditor5';
-import SimpleBox from "../elements/ckeditor/simplebox";
 
 import 'ckeditor5/ckeditor5.css';
 import { initializeApp } from "firebase/app";
@@ -63,6 +62,8 @@ import Navbar from "../elements/Navbar";
 import '../css/InputQuestion.css.scss';
 import Modal from "react-modal";
 import InlineOption from "../elements/ckeditor/inlineoption";
+import SimpleBox from "../elements/ckeditor/simplebox";
+import TwoPart from "../elements/ckeditor/twopart";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -84,6 +85,10 @@ const InputQuestion = () => {
     { value: 'verb', label: 'Verbal Reasoning' },
     { value: 'data', label: 'Data Insights' }
   ];
+  const CENTER_TYPE_LIST = [
+    { value: 'inline_option', label: 'Inline Option' },
+    { value: 'two_part', label: '2-part Analysis' },
+  ];
   const navigate = useNavigate();
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
@@ -97,6 +102,7 @@ const InputQuestion = () => {
   const section = params.get("section");
   const question = params.get("question");
   const arrangement = params.get("arrangement");
+  const centerType = params.get("center_type");
   const sectionName = list.filter(item => item.value === section)[0].label;
   const [displayWarnModal, setDisplayWarnModal] = useState({ display: false });
 
@@ -109,8 +115,7 @@ const InputQuestion = () => {
   const editorConfig = {
     toolbar: {
       items: [
-        'simpleBox',
-        'inlineOption',
+        centerType === 'inline_option' ? 'inlineOption' : 'twoPart',
         'undo',
         'redo',
         '|',
@@ -195,8 +200,8 @@ const InputQuestion = () => {
       TodoList,
       Underline,
       Undo,
-      SimpleBox,
-      InlineOption
+      InlineOption,
+      TwoPart
     ],
     fontFamily: {
       supportAllValues: true
@@ -296,6 +301,10 @@ const InputQuestion = () => {
     navigate('/question?preview=true');
   };
 
+  function getLabelFromList(list, value) {
+    return list.filter(item => item.value === value)[0].label;
+  }
+
   function readFirebaseData(e) {
     const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + question + "/" + arrangement + "/content";
     const dataRef = ref(database, path);
@@ -320,11 +329,21 @@ const InputQuestion = () => {
       });
     });
   };
+  const descriptionHeader = () => {
+    return "Question";
+    // if (descType === 'left' || descType === 'right') {
+    //   return getLabelFromList(DESC_LIST, descType);
+    // } else if (descType === "path_from_question") {
+    //   return localStorage.getItem("input_description_header");
+    // }
+    // return "Description Header";
+  }
   return (
     <div className="input-question">
       <Navbar/>
       <div className="mid-cont">
         <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
+        <h3>Type: { getLabelFromList(CENTER_TYPE_LIST, centerType) }</h3>
         <div className="main-container">
           <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
             <div className="editor-container__editor">

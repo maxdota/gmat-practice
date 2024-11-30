@@ -17,6 +17,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURE_ID,
 };
 const EditQuestionDetails = () => {
+  const LIST_SEP = ",_";
   Modal.appElement = "#root";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -36,6 +37,7 @@ const EditQuestionDetails = () => {
   ];
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
+    { value: 'two_part', label: '2-part Analysis' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -163,7 +165,7 @@ const EditQuestionDetails = () => {
     // localStorage.setItem('data', JSON.stringify(dataObject));
     // const storedData = JSON.parse(localStorage.getItem('data'));
 
-    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ arrangement }`);
+    navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ arrangement }&center_type=${ centerType }`);
   };
   const onAddOption1 = () => {
     let missingNumber = getMissingNumber(op1Data.optionList);
@@ -223,7 +225,7 @@ const EditQuestionDetails = () => {
       const rawList = rawData === null ? "" : rawData['option_list'];
       setOp1Data({
         correctOp: rawData === null ? "" : rawData['correct_option'],
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(","),
+        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
         options: rawData === null ? {} : rawData['options']
       })
     }, {
@@ -236,7 +238,7 @@ const EditQuestionDetails = () => {
       const rawList = rawData === null ? "" : rawData['option_list'];
       setOp2Data({
         correctOp: rawData === null ? "" : rawData['correct_option'],
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(","),
+        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
         options: rawData === null ? {} : rawData['options']
       })
     }, {
@@ -277,7 +279,7 @@ const EditQuestionDetails = () => {
     let newList = op1Data.optionList.sort();
     delete op1Data.options[data];
     setOp1Data({ correctOp: op1Data.correctOp, options: op1Data.options, optionList: newList })
-    updates[`option_list`] = newList.join(",");
+    updates[`option_list`] = newList.join(LIST_SEP);
     updates[`options/${ data }`] = null;
     const exRef = ref(database, path);
     update(exRef, updates).then();
@@ -289,7 +291,7 @@ const EditQuestionDetails = () => {
     let newList = op2Data.optionList.sort();
     delete op2Data.options[data];
     setOp2Data({ correctOp: op2Data.correctOp, options: op2Data.options, optionList: newList })
-    updates[`option_list`] = newList.join(",");
+    updates[`option_list`] = newList.join(LIST_SEP);
     updates[`options/${ data }`] = null;
     const exRef = ref(database, path);
     update(exRef, updates).then();
@@ -302,7 +304,7 @@ const EditQuestionDetails = () => {
     let newList = op1Data.optionList.sort();
     op1Data.options[number.toString()] = data;
     setOp1Data({ correctOp: op1Data.correctOp, options: op1Data.options, optionList: newList })
-    updates[`option_list`] = newList.join(",");
+    updates[`option_list`] = newList.join(LIST_SEP);
     updates[`options/${ number }`] = data;
     const exRef = ref(database, path);
     update(exRef, updates).then();
@@ -315,7 +317,7 @@ const EditQuestionDetails = () => {
     let newList = op2Data.optionList.sort();
     op2Data.options[number.toString()] = data;
     setOp2Data({ correctOp: op2Data.correctOp, options: op2Data.options, optionList: newList })
-    updates[`option_list`] = newList.join(",");
+    updates[`option_list`] = newList.join(LIST_SEP);
     updates[`options/${ number }`] = data;
     const exRef = ref(database, path);
     update(exRef, updates).then();

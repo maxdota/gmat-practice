@@ -16,6 +16,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURE_ID,
 };
 const Home = () => {
+  const LIST_SEP = ",_";
   const navigate = useNavigate()
   const [list, setList] = useState("");
   const [firstLoad, setFirstLoad] = useState(true);
@@ -28,7 +29,7 @@ const Home = () => {
     }
   });
   function ListOption() {
-    return list.split(",").map(item => {
+    return list.split(LIST_SEP).map(item => {
         return <div key={ item }>
           <label className={ "ecode radio-label" + (item === ecode ? " radio-check-bg" : "") }>
             <input

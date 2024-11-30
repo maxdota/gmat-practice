@@ -27,7 +27,7 @@
 //     }
 //   });
 //   function ListOption() {
-//     return list.split(",").map(item => {
+//     return list.split(",_").map(item => {
 //         return <div key={ item }>
 //           <label className={ "ecode radio-label" + (item === ecode ? " radio-check-bg" : "") }>
 //             <input

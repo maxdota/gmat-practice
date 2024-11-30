@@ -18,6 +18,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURE_ID,
 };
 const EditExamDetails = () => {
+  const LIST_SEP = ",_";
   Modal.appElement = "#root";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -42,6 +43,7 @@ const EditExamDetails = () => {
   ];
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
+    { value: 'two_part', label: '2-part Analysis' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -243,7 +245,7 @@ const EditExamDetails = () => {
     const examRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA + '/exam_list');
     onValue(examRef, (snapshot) => {
       let rawList = snapshot.val();
-      setList((rawList === "" || rawList === null) ? [] : rawList.split(","));
+      setList((rawList === "" || rawList === null) ? [] : rawList.split(LIST_SEP));
     }, {
       onlyOnce: true
     });
@@ -254,7 +256,7 @@ const EditExamDetails = () => {
     const questionRef = ref(database, path);
     onValue(questionRef, (snapshot) => {
       let rawList = snapshot.val();
-      setQuestionList((rawList === "" || rawList === null) ? [] : rawList.split(","));
+      setQuestionList((rawList === "" || rawList === null) ? [] : rawList.split(LIST_SEP));
     }, {
       onlyOnce: true
     });
@@ -344,7 +346,7 @@ const EditExamDetails = () => {
     list.splice(list.indexOf(examCode), 1);
     let newList = list.sort();
     setList(newList);
-    updates[`exam_list`] = newList.join(",");
+    updates[`exam_list`] = newList.join(LIST_SEP);
     updates[`exams/${ examCode }`] = null;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then(() => {
@@ -360,7 +362,7 @@ const EditExamDetails = () => {
     questionList.splice(questionList.indexOf(questionNumber), 1);
     let newList = questionList.sort();
     setQuestionList(newList);
-    updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(",");
+    updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(LIST_SEP);
     updates[`exams/${ ecode }/${ section }/questions/${ questionNumber }`] = null;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then();
@@ -384,7 +386,7 @@ const EditExamDetails = () => {
     list.push(examCode);
     let newList = list.sort();
     setList(newList);
-    updates[`exam_list`] = newList.join(",");
+    updates[`exam_list`] = newList.join(LIST_SEP);
     updates[`exams/${ examCode }`] = examData;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then(() => {
@@ -408,7 +410,7 @@ const EditExamDetails = () => {
     questionList.push(questionAddData.questionNumber.toString());
     let newList = questionList.sort();
     setQuestionList(newList);
-    updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(",");
+    updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(LIST_SEP);
     updates[`exams/${ ecode }/${ section }/questions/${ questionAddData.questionNumber }`] = data;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then();

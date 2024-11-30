@@ -307,7 +307,7 @@ const InputDescription = () => {
     } else if (descType === "path_from_question") {
       return localStorage.getItem("input_description_header");
     }
-    return pathToQuestion + descType;
+    return "Description Header";
   }
 
   const pathToQuestion = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + question + "/";
