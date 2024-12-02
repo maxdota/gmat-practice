@@ -25,8 +25,6 @@ import {
   ImageTextAlternative,
   ImageToolbar,
   ImageUpload,
-  Indent,
-  IndentBlock,
   Italic,
   List,
   ListProperties,
@@ -143,8 +141,6 @@ const InputQuestion = () => {
         'bulletedList',
         'numberedList',
         'todoList',
-        'outdent',
-        'indent'
       ],
       shouldNotGroupWhenFull: false
     },
@@ -173,8 +169,6 @@ const InputQuestion = () => {
       ImageToolbar,
       ImageUpload,
       Image, ImageResizeEditing, ImageResizeHandles,
-      Indent,
-      IndentBlock,
       Italic,
       List,
       ListProperties,

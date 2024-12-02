@@ -42,6 +42,7 @@ const EditQuestionDetails = () => {
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
     { value: 'sort_table', label: 'Sort Table' },
+    { value: 'multi_tabs', label: 'Multi-source' },
     { value: 'reuse', label: 'Reuse Previous Question Data' },
   ];
   const RIGHT_TYPE_LIST = [
@@ -218,9 +219,7 @@ const EditQuestionDetails = () => {
   };
 
   function readFirebaseData() {
-    const path = questionPath + "/" + arrangement + "/answer_data_1";
-    const answerDataRef = ref(database, path);
-    onValue(answerDataRef, (snapshot) => {
+    onValue(ref(database, questionPath + "/" + arrangement + "/answer_data_1"), (snapshot) => {
       const rawData = snapshot.val();
       const rawList = rawData === null ? "" : rawData['option_list'];
       setOp1Data({
@@ -228,9 +227,7 @@ const EditQuestionDetails = () => {
         optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
         options: rawData === null ? {} : rawData['options']
       })
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
     const path2 = questionPath + "/" + arrangement + "/answer_data_2";
     const answerDataRef2 = ref(database, path2);
     onValue(answerDataRef2, (snapshot) => {

@@ -27,10 +27,10 @@
   .container-op-and-hor-line {
     //width: fit-content;
   }
-  .sort-by-cont {
+
+  .sort-cont {
     margin-left: 50px;
-  }
-  .tab-cont {
+    display: flex;
   }
 
   .cont-750 {
@@ -39,15 +39,7 @@
 
   .sort-op-cont {
     width: 180px;
-    height: calc(50vh - 180px);
-    overflow: auto;
-    border: 1px solid black;
-    background: transparent;
-    margin-bottom: 25px;
-  }
-
-  .single-choice-op-cont {
-    height: calc(50vh - 180px);
+    height: calc(50vh - 185px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
@@ -55,23 +47,15 @@
   }
 
   .yes-no-op-cont {
-    height: calc(50vh - 180px);
+    height: calc(50vh - 185px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
     margin-bottom: 25px;
   }
 
-  .yes-no-cont {
+  .op2-cont {
     margin-left: 50px;
-    margin-right: 50px;
-    flex-grow: 1;
-  }
-
-  .single-choice-cont {
-    margin-left: 50px;
-    margin-right: 50px;
-    flex-grow: 1;
   }
 
   .option-text {
@@ -81,25 +65,14 @@
   .sort-content-cont {
     flex-grow: 1;
     margin-left: 50px;
-    margin-right: 50px;
   }
 
-  .tab-content-cont {
-    flex-grow: 1;
-    margin-left: 50px;
-    margin-right: 50px;
-  }
-
-  .right-cont {
-    display: flex;
-  }
-  .left-cont {
-    display: flex;
+  .desc-cont {
   }
 
   .lr-info-cont {
     width: 450px;
-    height: calc(50vh - 180px);
+    height: calc(50vh - 185px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
@@ -108,16 +81,7 @@
   }
 
   .sort-info-cont {
-    height: calc(50vh - 180px);
-    overflow: auto;
-    border: 1px solid black;
-    background: transparent;
-    margin-bottom: 25px;
-    padding: 6px 12px;
-  }
-
-  .tab-info-cont {
-    height: calc(50vh - 180px);
+    height: calc(50vh - 185px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
@@ -132,7 +96,7 @@
   }
 
   .edit-cont {
-    margin-top: 12px;
+    display: flex;
   }
 
   .add-image {

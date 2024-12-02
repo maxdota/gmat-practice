@@ -24,12 +24,9 @@ const EditQuestionDetailsLeftRight = () => {
   const navigate = useNavigate()
   const [firstLoad, setFirstLoad] = useState(true);
   const [sortData, setSortData] = useState({});
-  const [tabData, setTabData] = useState({});
-  const [singleChoiceData, setSingleChoiceData] = useState({});
   const [yesNoData, setYesNoData] = useState({});
   const [questionContent, setQuestionContent] = useState("");
   const [sortContent, setSortContent] = useState("");
-  const [tabContent, setTabContent] = useState("");
   const [leftContent, setLeftContent] = useState("");
   const [rightContent, setRightContent] = useState("");
   const SECTION_LIST = [
@@ -71,7 +68,6 @@ const EditQuestionDetailsLeftRight = () => {
   const [displayWarnModal, setDisplayWarnModal] = useState({ display: false });
   const [displayConfirmModal, setDisplayConfirmModal] = useState({ display: false });
   const [selectedSort, setSelectedSort] = useState("");
-  const [selectedTab, setSelectedTab] = useState("");
   const onCloseInputModal = () => {
     setDisplayInputModal({ display: false });
   };
@@ -79,10 +75,6 @@ const EditQuestionDetailsLeftRight = () => {
     const input = document.getElementById("modal-input-value").value;
     if (displayInputModal.action === "add_sort") {
       writeNewSortOption(input)
-    } else if (displayInputModal.action === "add_tab") {
-      writeNewTabOption(input)
-    } else if (displayInputModal.action === "add_single_choice") {
-      writeNewSingleChoiceData(input)
     } else if (displayInputModal.action === "add_yes_no") {
       writeNewYesNoData(input)
     }
@@ -97,10 +89,6 @@ const EditQuestionDetailsLeftRight = () => {
   const onConfirmConfirmModal = () => {
     if (displayConfirmModal.action === "delete_sort") {
       deleteSortOption(displayConfirmModal.data);
-    } else if (displayConfirmModal.action === "delete_tab") {
-      deleteTabOption(displayConfirmModal.data);
-    } else if (displayConfirmModal.action === "delete_single_choice") {
-      deleteSingleChoiceOption(displayConfirmModal.data);
     } else if (displayConfirmModal.action === "delete_yes_no") {
       deleteYesNoOption(displayConfirmModal.data);
     }
@@ -137,57 +125,6 @@ const EditQuestionDetailsLeftRight = () => {
             <img className="delete-image" src={ process.env.PUBLIC_URL + "/icon_delete.png" }
                  onClick={ () => onDeleteSort(item) }/>
             <div className="option-text radio-text">{ item }</div>
-          </label>
-          <div className="op-hor-line"/>
-        </div>
-      }
-    );
-  }
-
-  function ListTabOption() {
-    const list = tabData.optionList === undefined ? [] : tabData.optionList
-    return list.map(item => {
-        return <div key={ item } className="container-op-and-hor-line">
-          <label className={ "option-cell" + (item === selectedTab ? " radio-check-bg" : "") }>
-            <input
-              className="radio-input"
-              type="radio"
-              name="ecode"
-              value={ item }
-              checked={ item === selectedTab }
-              onChange={ (e) => {
-                const tab = e.currentTarget.value;
-                setSelectedTab(tab);
-                setTabContent(tabData.options[tab].content);
-              } }
-            />
-            <img className="delete-image" src={ process.env.PUBLIC_URL + "/icon_delete.png" }
-                 onClick={ () => onDeleteTab(item) }/>
-            <div className="option-text radio-text">{ item }</div>
-          </label>
-          <div className="op-hor-line"/>
-        </div>
-      }
-    );
-  }
-
-  function ListSingleChoiceOption() {
-    const list = singleChoiceData.optionList === undefined ? [] : singleChoiceData.optionList
-    return list.map(item => {
-        return <div key={ item }>
-          <label className="option-cell radio-label">
-            <img className="delete-image" src={ process.env.PUBLIC_URL + "/icon_delete.png" }
-                 onClick={ () => onDeleteSingleChoice(item) }/>
-            <img className="check-image"
-                 src={ process.env.PUBLIC_URL + (item === singleChoiceData.correctOp ? "/icon_check_enabled.png" : "/icon_check_disabled.png") }
-                 onClick={ () => writeCheckSingleChoiceData(item) }/>
-            <input
-              className="radio-input"
-              type="radio"
-              name="ecode"
-              value={ item }
-            />
-            <div className="option-text radio-text">{ `(${ item }) ${ singleChoiceData.options[item] }` }</div>
           </label>
           <div className="op-hor-line"/>
         </div>
@@ -234,37 +171,12 @@ const EditQuestionDetailsLeftRight = () => {
     localStorage.setItem("input_description_header", "Sort Option " + selectedSort);
     navigate(`/input-description?ecode=${ ecode }&section=${ section }&question=${ question }&desc_type=path_from_question`);
   }
-  const onEditTabContent = () => {
-    if (selectedTab === "") return;
-    localStorage.setItem("input_description_data", "left/options/" + selectedTab);
-    localStorage.setItem("input_description_header", "Tab Option " + selectedTab);
-    localStorage.setItem("additional_main_div_class", " indent-text");
-    navigate(`/input-description?ecode=${ ecode }&section=${ section }&question=${ question }&desc_type=path_from_question`);
-  }
   const onAddSortOption = () => {
     setDisplayInputModal({
       display: true,
       title: "Add Sort Option",
       placeholder: 'Input sort label',
       action: "add_sort"
-    });
-  };
-  const onAddTabOption = () => {
-    setDisplayInputModal({
-      display: true,
-      title: "Add Tab Data",
-      placeholder: 'Input tab label',
-      action: "add_tab"
-    });
-  };
-  const onAddSingleChoiceOption = () => {
-    let missingNumber = getMissingNumber(singleChoiceData.optionList);
-    setDisplayInputModal({
-      display: true,
-      title: "Add Single Choice Number " + missingNumber,
-      placeholder: 'Input content',
-      data: missingNumber,
-      action: "add_single_choice"
     });
   };
   const onAddYesNoOption = () => {
@@ -295,24 +207,6 @@ const EditQuestionDetailsLeftRight = () => {
       data: data
     });
   };
-  const onDeleteTab = (data) => {
-    setDisplayConfirmModal({
-      display: true,
-      title: "Delete Tab Confirmation",
-      description: `Do you want to delete tab ${ data }?`,
-      action: "delete_tab",
-      data: data
-    });
-  };
-  const onDeleteSingleChoice = (data) => {
-    setDisplayConfirmModal({
-      display: true,
-      title: "Delete Single Choice Confirmation",
-      description: `Do you want to delete single choice option ${ data }?`,
-      action: "delete_single_choice",
-      data: data
-    });
-  };
   const onDeleteYesNo = (data) => {
     setDisplayConfirmModal({
       display: true,
@@ -322,74 +216,23 @@ const EditQuestionDetailsLeftRight = () => {
       data: data
     });
   };
-  const showCont = (contClass) => {
-    document.getElementsByClassName(contClass)[0].className = contClass;
-  }
-  const showContCk = (contClass) => {
-    document.getElementsByClassName(contClass)[0].className = contClass + " ck-content";
-  }
-  const hideCont = (contClass) => {
-    document.getElementsByClassName(contClass)[0].className = contClass + " hidden";
-  }
-  const updateLeftDataAndUi = (rawData, rawList) => {
-    if (rawData['type'] === 'sort_table') {
-      setSortData({
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
-      })
-      showCont("left-desc-cont");
-      showCont("sort-by-cont");
-      showContCk("sort-content-cont");
-      hideCont("tab-cont");
-      hideCont("tab-content-cont");
-    } else if (rawData['type'] === 'multi_tabs') {
-      setTabData({
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
-      })
-      hideCont("left-desc-cont");
-      hideCont("sort-by-cont");
-      hideCont("sort-content-cont");
-      showCont("tab-cont");
-      showContCk("tab-content-cont");
-    }
-  }
-  const updateRightDataAndUi = (rawData, rawList) => {
-    if (rawData['type'] === 'yes_no') {
-      setYesNoData({
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
-      })
-      showCont("yes-no-cont");
-      hideCont("single-choice-cont");
-      // document.getElementsByClassName("sort-by-cont")[0].className = "sort-by-cont";
-      // document.getElementsByClassName("sort-content-cont")[0].className = "sort-content-cont ck-content";
-      // document.getElementsByClassName("tab-cont")[0].className = "tab-cont hidden";
-      // document.getElementsByClassName("tab-content-cont")[0].className = "tab-content-cont hidden";
-    } else if (rawData['type'] === 'single_choice') {
-      setSingleChoiceData({
-        correctOp: rawData === null ? "" : rawData['correct_option'],
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
-      })
-      hideCont("yes-no-cont");
-      showCont("single-choice-cont");
-      // document.getElementsByClassName("left-desc-cont")[0].className = "left-desc-cont hidden";
-      // document.getElementsByClassName("sort-by-cont")[0].className = "sort-by-cont hidden";
-      // document.getElementsByClassName("sort-content-cont")[0].className = "sort-content-cont hidden";
-      // document.getElementsByClassName("tab-cont")[0].className = "tab-cont";
-      // document.getElementsByClassName("tab-content-cont")[0].className = "tab-content-cont ck-content";
-    }
-  }
 
   function readFirebaseData() {
     onValue(ref(database, questionPath + "/right"), (snapshot) => {
       const rawData = snapshot.val();
-      updateRightDataAndUi(rawData, rawData === null ? "" : rawData['option_list']);
+      const rawList = rawData === null ? "" : rawData['option_list'];
+      setYesNoData({
+        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
+        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
+      })
     }, { onlyOnce: true });
     onValue(ref(database, questionPath + "/left"), (snapshot) => {
       const rawData = snapshot.val();
-      updateLeftDataAndUi(rawData, rawData === null ? "" : rawData['option_list']);
+      const rawList = rawData === null ? "" : rawData['option_list'];
+      setSortData({
+        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
+        options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
+      })
     }, { onlyOnce: true });
     onValue(ref(database, questionPath + "/left/content"), (snapshot) => {
       const rawData = snapshot.val();
@@ -400,18 +243,6 @@ const EditQuestionDetailsLeftRight = () => {
       setRightContent(rawData)
     }, { onlyOnce: true });
   }
-
-  const writeCheckSingleChoiceData = (data) => {
-    const updates = {};
-    updates[`correct_option`] = data;
-    update(ref(database, questionPath + "/right"), updates).then(() => {
-      setSingleChoiceData({
-        correctOp: data,
-        options: singleChoiceData.options,
-        optionList: singleChoiceData.optionList
-      })
-    });
-  };
 
   const writeCheckYesNoData = (data) => {
     const yesNo = yesNoData.options[data];
@@ -432,29 +263,6 @@ const EditQuestionDetailsLeftRight = () => {
     updates[`options/${ data }`] = null;
     update(ref(database, questionPath + "/left"), updates).then();
   };
-  const deleteTabOption = (data) => {
-    const updates = {};
-    tabData.optionList.splice(tabData.optionList.indexOf(data), 1);
-    delete tabData.options[data];
-    setTabData({ options: tabData.options, optionList: tabData.optionList })
-    updates[`option_list`] = tabData.optionList.join(LIST_SEP);
-    updates[`options/${ data }`] = null;
-    update(ref(database, questionPath + "/left"), updates).then();
-  };
-  const deleteSingleChoiceOption = (data) => {
-    const updates = {};
-    singleChoiceData.optionList.splice(singleChoiceData.optionList.indexOf(data), 1);
-    let newList = singleChoiceData.optionList.sort();
-    delete singleChoiceData.options[data];
-    setSingleChoiceData({
-      correctOp: singleChoiceData.correctOp,
-      options: singleChoiceData.options,
-      optionList: newList
-    })
-    updates[`option_list`] = newList.join(LIST_SEP);
-    updates[`options/${ data }`] = null;
-    update(ref(database, questionPath + "/right"), updates).then();
-  };
   const deleteYesNoOption = (data) => {
     const updates = {};
     yesNoData.optionList.splice(yesNoData.optionList.indexOf(data), 1);
@@ -473,30 +281,6 @@ const EditQuestionDetailsLeftRight = () => {
     updates[`options/${ data }/content`] = '';
     update(ref(database, questionPath + "/left"), updates).then();
   };
-  const writeNewTabOption = (data) => {
-    const updates = {};
-    tabData.optionList.push(data);
-    tabData.options[data] = { content: '' };
-    setTabData({ options: tabData.options, optionList: tabData.optionList })
-    updates[`option_list`] = tabData.optionList.join(LIST_SEP);
-    updates[`options/${ data }/content`] = '';
-    update(ref(database, questionPath + "/left"), updates).then();
-  };
-  const writeNewSingleChoiceData = (data) => {
-    const number = displayInputModal.data;
-    const updates = {};
-    singleChoiceData.optionList.push(number.toString());
-    let newList = singleChoiceData.optionList.sort();
-    singleChoiceData.options[number.toString()] = data;
-    setSingleChoiceData({
-      correctOp: singleChoiceData.correctOp,
-      options: singleChoiceData.options,
-      optionList: newList
-    })
-    updates[`option_list`] = newList.join(LIST_SEP);
-    updates[`options/${ number }`] = data;
-    update(ref(database, questionPath + "/right"), updates).then();
-  };
   const writeNewYesNoData = (data) => {
     const key = Date.now().toString();
     const updates = {};
@@ -513,61 +297,41 @@ const EditQuestionDetailsLeftRight = () => {
       <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
       <p>Type: { arrangement === 'center' ? getLabelFromList(CENTER_TYPE_LIST, centerType) : `${ getLabelFromList(LEFT_TYPE_LIST, leftType) } - ${ getLabelFromList(RIGHT_TYPE_LIST, rightType) }` }</p>
       <div className="edit-cont">
-        <div className="left-cont">
-          <div className="left-desc-cont ck-content hidden">
+        <div className="desc-cont">
+          <div className="left-desc-cont ck-content">
             <h2 className="edit-label">Left Description</h2>
             <button className="but-inline-right" onClick={ onEditLeftDesc }>EDIT</button>
             <div className="lr-info-cont" dangerouslySetInnerHTML={ { __html: leftContent } }/>
           </div>
-          <div className="sort-by-cont hidden">
-            <h2 className="edit-label">Sort By</h2>
-            <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddSortOption }/>
-            <div className="sort-op-cont">
-              <div className="op-cont-inner">
-                <ListSortOption/>
-              </div>
-            </div>
-          </div>
-          <div className="tab-cont hidden">
-            <h2 className="edit-label">Tab</h2>
-            <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddTabOption }/>
-            <div className="sort-op-cont">
-              <div className="op-cont-inner">
-                <ListTabOption/>
-              </div>
-            </div>
-          </div>
-          <div className="sort-content-cont ck-content hidden">
-            <h2 className="edit-label">Content</h2>
-            <button className="but-inline-right" onClick={ onEditSortContent }>EDIT</button>
-            <div className="sort-info-cont" dangerouslySetInnerHTML={ { __html: sortContent } }/>
-          </div>
-          <div className="tab-content-cont ck-content hidden">
-            <h2 className="edit-label">Content</h2>
-            <button className="but-inline-right" onClick={ onEditTabContent }>EDIT</button>
-            <div className="tab-info-cont indent-text" dangerouslySetInnerHTML={ { __html: tabContent } }/>
-          </div>
-        </div>
-        <div className="right-cont">
           <div className="right-desc-cont ck-content">
             <h2 className="edit-label">Right Description</h2>
             <button className="but-inline-right" onClick={ onEditRightDesc }>EDIT</button>
             <div className="lr-info-cont" dangerouslySetInnerHTML={ { __html: rightContent } }/>
           </div>
-          <div className="single-choice-cont hidden">
-            <h2 className="edit-label">Single Choice Option</h2>
-            <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" }
-                 onClick={ onAddSingleChoiceOption }/>
-            <div className="single-choice-op-cont">
-              <ListSingleChoiceOption/>
+        </div>
+        <div className="cont-750">
+          <div className="sort-cont">
+            <div className="edit-question-cont">
+              <h2 className="edit-label">Sort By</h2>
+              <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddSortOption }/>
+              <div className="sort-op-cont">
+                <div className="op-cont-inner">
+                  <ListSortOption/>
+                </div>
+              </div>
+            </div>
+            <div className="sort-content-cont ck-content">
+              <h2 className="edit-label">Content</h2>
+              <button className="but-inline-right" onClick={ onEditSortContent }>EDIT</button>
+              <div className="sort-info-cont" dangerouslySetInnerHTML={ { __html: sortContent } }/>
             </div>
           </div>
-          <div className="yes-no-cont hidden">
+          <div className="edit-exam-cont op2-cont">
             <h2 className="edit-label">Yes/No Statements</h2>
             <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddYesNoOption }/>
             <div className="yes-no-op-cont">
               <div className="op-cont-inner">
-                <ListYesNoOption/>
+              <ListYesNoOption/>
               </div>
             </div>
           </div>

@@ -48,6 +48,7 @@ const EditExamDetails = () => {
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
     { value: 'sort_table', label: 'Sort Table' },
+    { value: 'multi_tabs', label: 'Multi-source' },
     { value: 'reuse', label: 'Reuse Previous Question Data' },
   ];
   const RIGHT_TYPE_LIST = [
@@ -268,7 +269,6 @@ const EditExamDetails = () => {
 
   function readQuestionInfoFirebaseData(q) {
     const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + q;
-    console.log("path: " + path);
     const questionRef = ref(database, path);
     onValue(questionRef, (snapshot) => {
       let rawData = snapshot.val();

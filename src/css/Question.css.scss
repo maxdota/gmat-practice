@@ -2,6 +2,7 @@
   p {
     margin: 0;
   }
+
   .mid-cont {
     display: flex;
     position: absolute;
@@ -11,10 +12,12 @@
     right: 0;
     margin-top: 76px;
   }
+
   .mid-inner-cont {
     display: flex;
     width: 100vw;
   }
+
   .data-top {
     z-index: 1;
     display: flex;
@@ -27,92 +30,158 @@
     color: white;
     align-items: center;
   }
+
   .remaining-time {
     color: gold;
     display: flex;
     flex-grow: 1;
     flex-direction: row-reverse;
   }
+
   .clock-image {
     width: 20px;
     height: 20px;
     margin-right: 7px;
   }
+
   .data-top-text {
     margin-top: -2px;
   }
+
   .remaining-text {
   }
+
   .calculator-image {
     width: 30px;
     height: 30px;
     margin-left: 15px;
   }
+
   .center-cont {
     overflow: auto;
     padding-bottom: 90px;
     flex: 1;
   }
+
   .center-content {
     width: 90vw;
     margin: 20px auto 0;
   }
+
   .two-part-cont {
     width: 90vw;
     margin: 20px auto 0;
   }
+
   .left-right-cont {
     display: flex;
   }
+
   .left-cont {
     overflow: auto;
-    margin-bottom: 90px;
+    padding-bottom: 40px;
     flex: 0.9;
   }
+
   .right-cont {
     overflow: auto;
     padding-bottom: 90px;
     flex: 1;
   }
+
   .left-description {
-    margin: 10px 20px;
+    margin: 20px;
   }
+
   .right-description {
-    margin: 10px 20px;
+    margin: 20px;
   }
+
   .sort-cont {
     margin-left: 20px;
     margin-right: 20px;
   }
+
   .sort-select {
     margin-top: 10px;
     margin-bottom: 10px;
   }
+
+  .tab-cont {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+  }
+
+  .tab-ul {
+    list-style-type: none;
+    bottom: -1px;
+    position: relative;
+    padding-left: 0;
+    display: flex;
+  }
+
+  .tab-cell {
+    cursor: pointer;
+    display: block;
+    padding: 5px 10px;
+    background-color: #EEE;
+    color: #000;
+    text-decoration: none;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #DDD;
+    border-right: 1px solid #DDD;
+    font: 13px/18px verdana, arial, sans-serif;
+    border-bottom: 1px solid #CCC;
+  }
+
+  .tab-cell-space {
+    flex-grow: 1;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #CCC;
+  }
+
+  .tab-active {
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+  }
+
+  .single-choice-cont {
+    margin: 20px 50px;
+  }
+
   .yes-no-cont {
     margin: 20px;
   }
+
   .yes-no-label-row {
     display: flex;
     width: fit-content;
     border-top: 1px solid black;
     border-left: 1px solid black;
   }
+
   .yes-no-row {
     display: flex;
     border-top: 1px solid black;
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
+
   .yes-no-row:last-child {
     display: flex;
     border: 1px solid black;
   }
+
   .yes-no-radio {
     width: 50px;
     padding: 7px 10px;
     display: flex;
     justify-content: center;
   }
+
   .yes-no-radio-2 {
     width: 50px;
     padding: 7px 10px;
@@ -121,39 +190,46 @@
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
+
   .yes-no-text {
     flex: 1;
     padding: 5px 10px;
   }
+
   .two-part-label-row {
     display: flex;
     width: fit-content;
     border-top: 1px solid black;
     border-left: 1px solid black;
   }
+
   .two-part-row {
     display: flex;
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
+
   .two-part-row:nth-child(2) {
-     display: flex;
-     border-top: 1px solid black;
-     border-left: 1px solid black;
-     border-right: 1px solid black;
-   }
+    display: flex;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+
   .two-part-row:last-child {
     display: flex;
     border-left: 1px solid black;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
   }
+
   .two-part-radio {
     width: 50px;
     padding: 7px 10px;
     display: flex;
     justify-content: center;
   }
+
   .two-part-radio-2 {
     width: 50px;
     padding: 7px 10px;
@@ -162,11 +238,27 @@
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
+
   .two-part-text {
     flex: 1;
     padding: 5px 10px;
   }
+
+  .single-choice-row {
+    display: flex;
+  }
+
+  .single-choice-radio {
+    padding: 5px 10px;
+    display: flex;
+  }
+
+  .single-choice-text {
+    flex: 1;
+    padding: 5px 10px;
+  }
 }
+
 .ReactModalPortal {
   position: absolute;
   z-index: 2;

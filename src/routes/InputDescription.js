@@ -25,8 +25,6 @@ import {
   ImageTextAlternative,
   ImageToolbar,
   ImageUpload,
-  Indent,
-  IndentBlock,
   Italic,
   List,
   ListProperties,
@@ -92,6 +90,7 @@ const InputDescription = () => {
   const [inputEditor, setInputEditor] = useState(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [additionalMainDivClass, setAdditionalMainDivClass] = useState("");
   const [instructionData, setInstructionData] = useState({ editorReady: false, firebaseData: "" });
   const search = useLocation().search;
   let params = new URLSearchParams(search);
@@ -107,6 +106,13 @@ const InputDescription = () => {
     setIsLayoutReady(true);
     return () => setIsLayoutReady(false);
   }, []);
+  useEffect(() => {
+    if (firstLoad) {
+      setAdditionalMainDivClass(localStorage.getItem("additional_main_div_class"));
+      localStorage.removeItem("additional_main_div_class");
+      setFirstLoad(false);
+    }
+  }, [firstLoad]);
 
   let editor;
   const editorConfig = {
@@ -139,8 +145,6 @@ const InputDescription = () => {
         'bulletedList',
         'numberedList',
         'todoList',
-        'outdent',
-        'indent'
       ],
       shouldNotGroupWhenFull: false
     },
@@ -169,8 +173,6 @@ const InputDescription = () => {
       ImageToolbar,
       ImageUpload,
       Image, ImageResizeEditing, ImageResizeHandles,
-      Indent,
-      IndentBlock,
       Italic,
       List,
       ListProperties,
@@ -295,9 +297,6 @@ const InputDescription = () => {
     navigate('/question?preview=true');
   };
   function getLabelFromList(list, value) {
-    console.log("list: " + list);
-    console.log("value: " + value);
-    console.log("item: " + list.filter(item => item.value === value)[0]);
     return list.filter(item => item.value === value)[0].label;
   }
 
@@ -343,13 +342,19 @@ const InputDescription = () => {
       });
     });
   };
+  const mainDivClass = () => {
+    if (additionalMainDivClass === undefined) {
+      return "main-container";
+    }
+    return "main-container" + additionalMainDivClass;
+  }
   return (
     <div className="input-description">
       <Navbar/>
       <div className="mid-cont">
         <h1>Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
         <h3>Edit { descriptionHeader() }</h3>
-        <div className="main-container">
+        <div className={ mainDivClass() }>
           <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
             <div className="editor-container__editor">
               <div ref={ editorRef }>{ isLayoutReady && <CKEditor

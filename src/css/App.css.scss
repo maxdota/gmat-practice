@@ -90,6 +90,12 @@ p {
   margin: 0 !important;
 }
 
+.indent-text {
+  p {
+    text-indent: 25px;
+  }
+}
+
 .ver-line {
   width: 1px;
   //height: 100vh;
