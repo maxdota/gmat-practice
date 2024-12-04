@@ -23,14 +23,14 @@
   .op-cont {
     white-space: nowrap;
     width: 200px;
-    height: calc(100vh - 280px);
+    height: calc(100vh - 300px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;
     margin-top: 10px;
     margin-bottom: 25px;
   }
-  .op2-cont {
+  .edit-op2-cont {
     margin-left: 50px;
   }
   .option-text {
@@ -38,11 +38,12 @@
   }
 
   .content-cont {
+    flex-grow: 1;
     margin-left: 50px;
+    margin-right: 50px;
   }
   .info-cont {
-    width: 550px;
-    height: calc(100vh - 280px);
+    height: calc(100vh - 300px);
     overflow: auto;
     border: 1px solid black;
     background: transparent;

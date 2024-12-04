@@ -18,6 +18,17 @@
     margin-bottom: 25px;
   }
 
+  .question-opt-cont {
+    width: 120px;
+    height: calc(100vh - 280px);
+    overflow: auto;
+    overflow-x: hidden;
+    border: 1px solid black;
+    background: transparent;
+    margin-top: 10px;
+    margin-bottom: 25px;
+  }
+
   .section-opt-cont {
     width: 120px;
     height: calc(100vh - 280px);

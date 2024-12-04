@@ -1,8 +1,4 @@
 .question {
-  p {
-    margin: 0;
-  }
-
   .mid-cont {
     display: flex;
     position: absolute;
@@ -64,12 +60,12 @@
   }
 
   .center-content {
-    width: 90vw;
-    margin: 20px auto 0;
+    margin: 20px 50px;
   }
 
   .two-part-cont {
-    width: 90vw;
+    width: max-content;
+    max-width: 90vw;
     margin: 20px auto 0;
   }
 
@@ -105,6 +101,12 @@
   .sort-select {
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+
+  .normal-cont {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
   }
 
   .tab-cont {
@@ -152,7 +154,12 @@
     margin: 20px 50px;
   }
 
+  .single-choice-center-cont {
+    margin: 20px 50px;
+  }
+
   .yes-no-cont {
+    width: max-content;
     margin: 20px;
   }
 
@@ -193,7 +200,7 @@
 
   .yes-no-text {
     flex: 1;
-    padding: 5px 10px;
+    padding: 6px 15px;
   }
 
   .two-part-label-row {
@@ -241,7 +248,7 @@
 
   .two-part-text {
     flex: 1;
-    padding: 5px 10px;
+    padding: 6px 15px;
   }
 
   .single-choice-row {

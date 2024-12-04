@@ -44,6 +44,7 @@ const Question = () => {
   const [sortData, setSortData] = useState({ list: [], currentSort: "" });
   const [tabData, setTabData] = useState({ list: [], currentTab: "" });
   const [yesNoData, setYesNoData] = useState({ optionList: [], options: [], userOptions: {} });
+  const [singleChoiceCenterData, setSingleChoiceCenterData] = useState({ optionList: [], options: [] });
   const [singleChoiceData, setSingleChoiceData] = useState({ optionList: [], options: [] });
   const [twoPartData, setTwoPartData] = useState({ optionList: [], options: [] });
   // this questionData is always data of the next question after loading next
@@ -65,10 +66,11 @@ const Question = () => {
       setTimeout(() => {
         setTimer(timer - 1);
         localStorage.setItem('remaining_time', (timer - 1).toString());
-      // }, 100000)
-      }, 1000)
+      }, 100000)
+      // }, 1000)
     }
   }, [timer]);
+  // todo: allow mathematics formula
   useEffect(() => {
     if (endSection) {
       navigate("/", { replace: true });
@@ -138,6 +140,22 @@ const Question = () => {
     );
   }
 
+  function ListSingleChoiceCenterOption() {
+    const list = singleChoiceCenterData.optionList === undefined ? [] : singleChoiceCenterData.optionList
+    return list.map(item => {
+        return <div key={ item } className="single-choice-row">
+          <label className="single-choice-radio">
+            <input type="radio" name="single-choice-option-center"
+                   value={ item + "-single-choice-center" }
+                   checked={ singleChoiceCenterData.userOption === item } onChange={ () => "" }
+                   onClick={ () => onSelectSingleChoiceCenter(item) }/>
+            <div className="single-choice-text">{ singleChoiceCenterData.options[item] }</div>
+          </label>
+        </div>
+      }
+    );
+  }
+
   function ListSingleChoiceOption() {
     const list = singleChoiceData.optionList === undefined ? [] : singleChoiceData.optionList
     return list.map(item => {
@@ -197,18 +215,26 @@ const Question = () => {
   }
 
   const onChangeSort = (e) => {
-    setSortData({ list: sortData.list, currentSort: e.value })
+    setSortData({ list: sortData.list, currentSort: e.value, options: sortData.options })
     document.getElementsByClassName("sort-content")[0].innerHTML =
-      currentData['left']['options'][getLabelFromList(sortData.list, e.value)]['content'];
+      sortData.options[getLabelFromList(sortData.list, e.value)]['content'];
   };
   const onChangeTab = (value) => {
-    setTabData({ list: tabData.list, currentTab: value })
+    setTabData({ list: tabData.list, currentTab: value, options: tabData.options })
     document.getElementsByClassName("tab-content")[0].innerHTML =
-      currentData['left']['options'][getLabelFromList(tabData.list, value)]['content'];
+      tabData.options[getLabelFromList(tabData.list, value)]['content'];
   };
   const onSelectYesNo = (key, value) => {
     yesNoData.userOptions[key] = value;
     setYesNoData({ optionList: yesNoData.optionList, options: yesNoData.options, userOptions: yesNoData.userOptions });
+  };
+  const onSelectSingleChoiceCenter = (key) => {
+    singleChoiceCenterData.userOption = key;
+    setSingleChoiceCenterData({
+      optionList: singleChoiceCenterData.optionList,
+      options: singleChoiceCenterData.options,
+      userOption: singleChoiceCenterData.userOption,
+    });
   };
   const onSelectSingleChoice = (key) => {
     singleChoiceData.userOption = key;
@@ -258,6 +284,9 @@ const Question = () => {
         userQuestion.correct_option_2 = currentData['center']['answer_data_2']['correct_option'];
         userAnswer.option_1 = twoPartData.userOption1;
         userAnswer.option_2 = twoPartData.userOption2;
+      } else if (centerType === "single_choice") {
+        userQuestion.correct_option = currentData['center']['answer_data']['correct_option'];
+        userAnswer.option = singleChoiceCenterData.userOption;
       }
     } else {
       const rightType = currentData['right']['type'];
@@ -307,12 +336,22 @@ const Question = () => {
       const centerType = questionData['center']['type'];
       if (centerType === "inline_option") {
         hideCont("two-part-cont");
+        hideCont("single-choice-center-cont");
       } else if (centerType === "two_part") {
         showCont("two-part-cont");
+        hideCont("single-choice-center-cont");
         const centerData = questionData['center'];
         setTwoPartData({
           optionList: centerData['answer_data_1']['option_list'].split(LIST_SEP),
           options: centerData['answer_data_1']['options'],
+        })
+      } else if (centerType === "single_choice") {
+        hideCont("two-part-cont");
+        showCont("single-choice-center-cont");
+        const centerData = questionData['center'];
+        setSingleChoiceCenterData({
+          optionList: centerData['answer_data']['option_list'].split(LIST_SEP),
+          options: centerData['answer_data']['options'],
         })
       }
     } else {
@@ -331,7 +370,8 @@ const Question = () => {
         document.getElementsByClassName("left-description")[0].innerHTML = leftData['content'];
         showCont("sort-cont");
         hideCont("tab-cont");
-        setSortData({ list: list, currentSort: "0" });
+        hideCont("normal-cont");
+        setSortData({ list: list, currentSort: "0", options: leftData['options'] });
         document.getElementsByClassName("sort-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
       } else if (leftType === "multi_tabs") {
         const list = [];
@@ -341,8 +381,15 @@ const Question = () => {
         hideCont("left-description");
         hideCont("sort-cont");
         showContIndent("tab-cont");
-        setTabData({ list: list, currentTab: "0" });
+        hideCont("normal-cont");
+        setTabData({ list: list, currentTab: "0", options: leftData['options'] });
         document.getElementsByClassName("tab-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
+      } else if (leftType === "normal") {
+        hideCont("left-description");
+        hideCont("sort-cont");
+        hideCont("tab-cont");
+        showContIndent("normal-cont");
+        document.getElementsByClassName("normal-content")[0].innerHTML = leftData['normal_data']['content'];
       }
       const rightType = questionData['right']['type'];
       if (rightType === "yes_no") {
@@ -389,18 +436,21 @@ const Question = () => {
       <div className="ck-content mid-inner-cont">
         <div className="center-cont hidden">
           <div className="center-content"/>
-          <div className="two-part-cont">
+          <div className="two-part-cont hidden">
             <div className="two-part-label-row">
               <label className="two-part-radio">1</label>
               <label className="two-part-radio-2">2</label>
             </div>
             <ListTwoPartOption/>
           </div>
+          <div className="single-choice-center-cont hidden">
+            <ListSingleChoiceCenterOption/>
+          </div>
         </div>
         <div className="left-right-cont hidden">
           <div className="left-cont">
             <div className="left-description"/>
-            <div className="sort-cont">
+            <div className="sort-cont hidden">
               <b>Sort By</b>
               <Select
                 className="sort-select"
@@ -409,25 +459,28 @@ const Question = () => {
                 value={ sortData.list.filter(option => option.value === sortData.currentSort) }/>
               <div className="sort-content"/>
             </div>
-            <div className="tab-cont">
+            <div className="tab-cont hidden">
               <ul className="tab-ul">
                 <ListTabOption/>
                 <li className="tab-cell-space"/>
               </ul>
               <div className="tab-content"/>
             </div>
+            <div className="normal-cont hidden">
+              <div className="normal-content"/>
+            </div>
           </div>
           <div className="ver-line"/>
           <div className="right-cont">
             <div className="right-description"/>
-            <div className="yes-no-cont">
+            <div className="yes-no-cont hidden">
               <div className="yes-no-label-row">
                 <label className="yes-no-radio">Yes</label>
                 <label className="yes-no-radio-2">No</label>
               </div>
               <ListYesNoOption/>
             </div>
-            <div className="single-choice-cont">
+            <div className="single-choice-cont hidden">
               <ListSingleChoiceOption/>
             </div>
           </div>

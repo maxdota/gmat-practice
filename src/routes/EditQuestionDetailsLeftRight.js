@@ -30,6 +30,7 @@ const EditQuestionDetailsLeftRight = () => {
   const [questionContent, setQuestionContent] = useState("");
   const [sortContent, setSortContent] = useState("");
   const [tabContent, setTabContent] = useState("");
+  const [normalContent, setNormalContent] = useState("");
   const [leftContent, setLeftContent] = useState("");
   const [rightContent, setRightContent] = useState("");
   const SECTION_LIST = [
@@ -44,6 +45,7 @@ const EditQuestionDetailsLeftRight = () => {
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
+    { value: 'single_choice', label: 'Single Choice' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -54,7 +56,6 @@ const EditQuestionDetailsLeftRight = () => {
   const RIGHT_TYPE_LIST = [
     { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
-    { value: '2_choice_table', label: '2 Choices Table' },
   ];
   const search = useLocation().search;
   let params = new URLSearchParams(search);
@@ -241,6 +242,12 @@ const EditQuestionDetailsLeftRight = () => {
     localStorage.setItem("additional_main_div_class", " indent-text");
     navigate(`/input-description?ecode=${ ecode }&section=${ section }&question=${ question }&desc_type=path_from_question`);
   }
+  const onEditNormalContent = () => {
+    localStorage.setItem("input_description_data", "left/normal_data");
+    localStorage.setItem("input_description_header", "Question Content");
+    localStorage.setItem("additional_main_div_class", " indent-text");
+    navigate(`/input-description?ecode=${ ecode }&section=${ section }&question=${ question }&desc_type=path_from_question`);
+  }
   const onAddSortOption = () => {
     setDisplayInputModal({
       display: true,
@@ -332,7 +339,8 @@ const EditQuestionDetailsLeftRight = () => {
     document.getElementsByClassName(contClass)[0].className = contClass + " hidden";
   }
   const updateLeftDataAndUi = (rawData, rawList) => {
-    if (rawData['type'] === 'sort_table') {
+    const leftType = rawData['type'];
+    if (leftType === 'sort_table') {
       setSortData({
         optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
         options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
@@ -342,7 +350,8 @@ const EditQuestionDetailsLeftRight = () => {
       showContCk("sort-content-cont");
       hideCont("tab-cont");
       hideCont("tab-content-cont");
-    } else if (rawData['type'] === 'multi_tabs') {
+      hideCont("normal-content-cont");
+    } else if (leftType === 'multi_tabs') {
       setTabData({
         optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
         options: rawData === null || rawData['options'] === undefined ? {} : rawData['options']
@@ -352,6 +361,16 @@ const EditQuestionDetailsLeftRight = () => {
       hideCont("sort-content-cont");
       showCont("tab-cont");
       showContCk("tab-content-cont");
+      hideCont("normal-content-cont");
+    } else if (leftType === 'normal') {
+      const data = rawData['normal_data'];
+      setNormalContent((data === "" || data === null || data === undefined) ? "" : data['content']);
+      hideCont("left-desc-cont");
+      hideCont("sort-by-cont");
+      hideCont("sort-content-cont");
+      hideCont("tab-cont");
+      hideCont("tab-content-cont");
+      showContCk("normal-content-cont");
     }
   }
   const updateRightDataAndUi = (rawData, rawList) => {
@@ -362,10 +381,6 @@ const EditQuestionDetailsLeftRight = () => {
       })
       showCont("yes-no-cont");
       hideCont("single-choice-cont");
-      // document.getElementsByClassName("sort-by-cont")[0].className = "sort-by-cont";
-      // document.getElementsByClassName("sort-content-cont")[0].className = "sort-content-cont ck-content";
-      // document.getElementsByClassName("tab-cont")[0].className = "tab-cont hidden";
-      // document.getElementsByClassName("tab-content-cont")[0].className = "tab-content-cont hidden";
     } else if (rawData['type'] === 'single_choice') {
       setSingleChoiceData({
         correctOp: rawData === null ? "" : rawData['correct_option'],
@@ -374,11 +389,6 @@ const EditQuestionDetailsLeftRight = () => {
       })
       hideCont("yes-no-cont");
       showCont("single-choice-cont");
-      // document.getElementsByClassName("left-desc-cont")[0].className = "left-desc-cont hidden";
-      // document.getElementsByClassName("sort-by-cont")[0].className = "sort-by-cont hidden";
-      // document.getElementsByClassName("sort-content-cont")[0].className = "sort-content-cont hidden";
-      // document.getElementsByClassName("tab-cont")[0].className = "tab-cont";
-      // document.getElementsByClassName("tab-content-cont")[0].className = "tab-content-cont ck-content";
     }
   }
 
@@ -547,6 +557,11 @@ const EditQuestionDetailsLeftRight = () => {
             <button className="but-inline-right" onClick={ onEditTabContent }>EDIT</button>
             <div className="tab-info-cont indent-text" dangerouslySetInnerHTML={ { __html: tabContent } }/>
           </div>
+          <div className="normal-content-cont ck-content hidden">
+            <h2 className="edit-label">Content</h2>
+            <button className="but-inline-right" onClick={ onEditNormalContent }>EDIT</button>
+            <div className="tab-info-cont indent-text" dangerouslySetInnerHTML={ { __html: normalContent } }/>
+          </div>
         </div>
         <div className="right-cont">
           <div className="right-desc-cont ck-content">
@@ -566,7 +581,7 @@ const EditQuestionDetailsLeftRight = () => {
             <h2 className="edit-label">Yes/No Statements</h2>
             <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddYesNoOption }/>
             <div className="yes-no-op-cont">
-              <div className="op-cont-inner">
+              <div>
                 <ListYesNoOption/>
               </div>
             </div>
@@ -581,7 +596,7 @@ const EditQuestionDetailsLeftRight = () => {
       isOpen={ displayInputModal.display }
       contentLabel="Example Modal">
       <div className="modal-nav-top">{ displayInputModal.title }</div>
-      <input type="text" className="modal-text-input" id="modal-input-value"
+      <input type="text" className="modal-text-input" id="modal-input-value" autoFocus="true"
              placeholder={ displayInputModal.placeholder }/>
       <div className="container-but">
         <button className="but-cancel" onClick={ onCloseInputModal }>Cancel</button>

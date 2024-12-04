@@ -23,6 +23,7 @@ const EditQuestionDetails = () => {
   const database = getDatabase(app);
   const navigate = useNavigate()
   const [firstLoad, setFirstLoad] = useState(true);
+  const [opData, setOpData] = useState({});
   const [op1Data, setOp1Data] = useState({});
   const [op2Data, setOp2Data] = useState({});
   const [questionContent, setQuestionContent] = useState("");
@@ -38,6 +39,7 @@ const EditQuestionDetails = () => {
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
+    { value: 'single_choice', label: 'Single Choice' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -48,7 +50,6 @@ const EditQuestionDetails = () => {
   const RIGHT_TYPE_LIST = [
     { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
-    { value: '2_choice_table', label: '2 Choices Table' },
   ];
   const search = useLocation().search;
   let params = new URLSearchParams(search);
@@ -69,7 +70,9 @@ const EditQuestionDetails = () => {
   };
   const onSubmitInputModal = () => {
     const input = document.getElementById("modal-input-value").value;
-    if (displayInputModal.action === "add_option_1") {
+    if (displayInputModal.action === "add_option") {
+      writeNewOption(input)
+    } else if (displayInputModal.action === "add_option_1") {
       writeNewOption1(input)
     } else if (displayInputModal.action === "add_option_2") {
       writeNewOption2(input)
@@ -83,7 +86,9 @@ const EditQuestionDetails = () => {
     setDisplayConfirmModal({ display: false });
   };
   const onConfirmConfirmModal = () => {
-    if (displayConfirmModal.action === "delete_option_1") {
+    if (displayConfirmModal.action === "delete_option") {
+      deleteOption(displayConfirmModal.data);
+    } else if (displayConfirmModal.action === "delete_option_1") {
       deleteOption1(displayConfirmModal.data);
     } else if (displayConfirmModal.action === "delete_option_2") {
       deleteOption2(displayConfirmModal.data);
@@ -101,6 +106,29 @@ const EditQuestionDetails = () => {
     return list.filter(item => item.value === value)[0].label;
   }
 
+  function ListOption() {
+    const list = opData.optionList === undefined ? [] : opData.optionList
+    return list.map(item => {
+        return <div key={ item }>
+          <label className="option-cell radio-label">
+            <img className="delete-image" src={ process.env.PUBLIC_URL + "/icon_delete.png" }
+                 onClick={ () => onDeleteOp(item) }/>
+            <img className="check-image"
+                 src={ process.env.PUBLIC_URL + (item === opData.correctOp ? "/icon_check_enabled.png" : "/icon_check_disabled.png") }
+                 onClick={ () => writeCheckOpData(item) }/>
+            <input
+              className="radio-input"
+              type="radio"
+              name="ecode"
+              value={ item }
+            />
+            <div className="option-text radio-text">{ `(${ item }) ${ opData.options[item] }` }</div>
+          </label>
+          <div className="op-hor-line"/>
+        </div>
+      }
+    );
+  }
   function ListOption1() {
     const list = op1Data.optionList === undefined ? [] : op1Data.optionList
     return list.map(item => {
@@ -161,12 +189,21 @@ const EditQuestionDetails = () => {
       });
       return;
     }
-    localStorage.setItem('op1_data', JSON.stringify(op1Data));
-    localStorage.setItem('op2_data', JSON.stringify(op2Data));
-    // localStorage.setItem('data', JSON.stringify(dataObject));
-    // const storedData = JSON.parse(localStorage.getItem('data'));
-
+    if (centerType === 'inline_option' || centerType === 'two_part') {
+      localStorage.setItem('op1_data', JSON.stringify(op1Data));
+      localStorage.setItem('op2_data', JSON.stringify(op2Data));
+    }
     navigate(`/input-question?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ arrangement }&center_type=${ centerType }`);
+  };
+  const onAddOption = () => {
+    let missingNumber = getMissingNumber(opData.optionList);
+    setDisplayInputModal({
+      display: true,
+      title: "Add Option Number " + missingNumber,
+      placeholder: 'Input content',
+      data: missingNumber,
+      action: "add_option"
+    });
   };
   const onAddOption1 = () => {
     let missingNumber = getMissingNumber(op1Data.optionList);
@@ -199,6 +236,15 @@ const EditQuestionDetails = () => {
     });
     return number + 1;
   }
+  const onDeleteOp = (data) => {
+    setDisplayConfirmModal({
+      display: true,
+      title: "Delete Option Confirmation",
+      description: `Do you want to delete option ${ data }?`,
+      action: "delete_option",
+      data: data
+    });
+  };
   const onDeleteOp1 = (data) => {
     setDisplayConfirmModal({
       display: true,
@@ -217,40 +263,67 @@ const EditQuestionDetails = () => {
       data: data
     });
   };
-
-  function readFirebaseData() {
-    onValue(ref(database, questionPath + "/" + arrangement + "/answer_data_1"), (snapshot) => {
-      const rawData = snapshot.val();
-      const rawList = rawData === null ? "" : rawData['option_list'];
-      setOp1Data({
-        correctOp: rawData === null ? "" : rawData['correct_option'],
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null ? {} : rawData['options']
-      })
-    }, { onlyOnce: true });
-    const path2 = questionPath + "/" + arrangement + "/answer_data_2";
-    const answerDataRef2 = ref(database, path2);
-    onValue(answerDataRef2, (snapshot) => {
-      const rawData = snapshot.val();
-      const rawList = rawData === null ? "" : rawData['option_list'];
-      setOp2Data({
-        correctOp: rawData === null ? "" : rawData['correct_option'],
-        optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
-        options: rawData === null ? {} : rawData['options']
-      })
-    }, {
-      onlyOnce: true
-    });
-    const pathContent = questionPath + "/" + arrangement + "/content";
-    const contentRef = ref(database, pathContent);
-    onValue(contentRef, (snapshot) => {
-      const rawData = snapshot.val();
-      setQuestionContent(rawData)
-    }, {
-      onlyOnce: true
-    });
+  const showCont = (contClass) => {
+    document.getElementsByClassName(contClass)[0].className = contClass;
+  }
+  const showContCk = (contClass) => {
+    document.getElementsByClassName(contClass)[0].className = contClass + " ck-content";
+  }
+  const hideCont = (contClass) => {
+    document.getElementsByClassName(contClass)[0].className = contClass + " hidden";
   }
 
+  function readFirebaseData() {
+    if (centerType === 'single_choice') {
+      showCont("edit-op-cont");
+      hideCont("edit-op1-cont");
+      hideCont("edit-op2-cont");
+      onValue(ref(database, questionPath + "/" + arrangement + "/answer_data"), (snapshot) => {
+        const rawData = snapshot.val();
+        const rawList = rawData === null ? "" : rawData['option_list'];
+        setOpData({
+          correctOp: rawData === null ? "" : rawData['correct_option'],
+          optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
+          options: rawData === null ? {} : rawData['options']
+        })
+      }, { onlyOnce: true });
+    } else if (centerType === 'inline_option' || centerType === 'two_part') {
+      hideCont("edit-op-cont");
+      showCont("edit-op1-cont");
+      showCont("edit-op2-cont");
+      onValue(ref(database, questionPath + "/" + arrangement + "/answer_data_1"), (snapshot) => {
+        const rawData = snapshot.val();
+        const rawList = rawData === null ? "" : rawData['option_list'];
+        setOp1Data({
+          correctOp: rawData === null ? "" : rawData['correct_option'],
+          optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
+          options: rawData === null ? {} : rawData['options']
+        })
+      }, { onlyOnce: true });
+      onValue(ref(database, questionPath + "/" + arrangement + "/answer_data_2"), (snapshot) => {
+        const rawData = snapshot.val();
+        const rawList = rawData === null ? "" : rawData['option_list'];
+        setOp2Data({
+          correctOp: rawData === null ? "" : rawData['correct_option'],
+          optionList: (rawList === "" || rawList === null || rawList === undefined) ? [] : rawList.split(LIST_SEP),
+          options: rawData === null ? {} : rawData['options']
+        })
+      }, { onlyOnce: true });
+    }
+    onValue(ref(database, questionPath + "/" + arrangement + "/content"), (snapshot) => {
+      const rawData = snapshot.val();
+      setQuestionContent(rawData)
+    }, { onlyOnce: true });
+  }
+  const writeCheckOpData = (data) => {
+    const path = questionPath + "/" + arrangement + "/answer_data";
+    const updates = {};
+    updates[`correct_option`] = data;
+    const exRef = ref(database, path);
+    update(exRef, updates).then(() => {
+      setOpData({ correctOp: data, options: opData.options, optionList: opData.optionList })
+    });
+  };
   const writeCheckOp1Data = (data) => {
     const path = questionPath + "/" + arrangement + "/answer_data_1";
     const updates = {};
@@ -268,6 +341,18 @@ const EditQuestionDetails = () => {
     update(exRef, updates).then(() => {
       setOp2Data({ correctOp: data, options: op2Data.options, optionList: op2Data.optionList })
     });
+  };
+  const deleteOption = (data) => {
+    const path = questionPath + "/" + arrangement + "/answer_data";
+    const updates = {};
+    opData.optionList.splice(opData.optionList.indexOf(data), 1);
+    let newList = opData.optionList.sort();
+    delete opData.options[data];
+    setOpData({ correctOp: opData.correctOp, options: opData.options, optionList: newList })
+    updates[`option_list`] = newList.join(LIST_SEP);
+    updates[`options/${ data }`] = null;
+    const exRef = ref(database, path);
+    update(exRef, updates).then();
   };
   const deleteOption1 = (data) => {
     const path = questionPath + "/" + arrangement + "/answer_data_1";
@@ -290,6 +375,19 @@ const EditQuestionDetails = () => {
     setOp2Data({ correctOp: op2Data.correctOp, options: op2Data.options, optionList: newList })
     updates[`option_list`] = newList.join(LIST_SEP);
     updates[`options/${ data }`] = null;
+    const exRef = ref(database, path);
+    update(exRef, updates).then();
+  };
+  const writeNewOption = (data) => {
+    const path = questionPath + "/" + arrangement + "/answer_data";
+    const number = displayInputModal.data;
+    const updates = {};
+    opData.optionList.push(number.toString());
+    let newList = opData.optionList.sort();
+    opData.options[number.toString()] = data;
+    setOpData({ correctOp: opData.correctOp, options: opData.options, optionList: newList })
+    updates[`option_list`] = newList.join(LIST_SEP);
+    updates[`options/${ number }`] = data;
     const exRef = ref(database, path);
     update(exRef, updates).then();
   };
@@ -325,14 +423,21 @@ const EditQuestionDetails = () => {
       <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
       <p>Type: { arrangement === 'center' ? getLabelFromList(CENTER_TYPE_LIST, centerType) : `${ getLabelFromList(LEFT_TYPE_LIST, leftType) } - ${ getLabelFromList(RIGHT_TYPE_LIST, rightType) }` }</p>
       <div className="edit-cont">
-        <div className="edit-question-cont">
+        <div className="edit-op-cont hidden">
+          <h2 className="edit-label">Option</h2>
+          <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddOption }/>
+          <div className="op-cont">
+            <ListOption/>
+          </div>
+        </div>
+        <div className="edit-op1-cont hidden">
           <h2 className="edit-label">Option 1</h2>
           <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddOption1 }/>
           <div className="op-cont">
             <ListOption1/>
           </div>
         </div>
-        <div className="edit-exam-cont op2-cont">
+        <div className="edit-op2-cont hidden">
           <h2 className="edit-label">Option 2</h2>
           <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddOption2 }/>
           <div className="op-cont">
@@ -353,7 +458,7 @@ const EditQuestionDetails = () => {
       isOpen={ displayInputModal.display }
       contentLabel="Example Modal">
       <div className="modal-nav-top">{ displayInputModal.title }</div>
-      <input type="text" className="modal-text-input" id="modal-input-value"
+      <input type="text" className="modal-text-input" id="modal-input-value" autoFocus="true"
              placeholder={ displayInputModal.placeholder }/>
       <div className="container-but">
         <button className="but-cancel" onClick={ onCloseInputModal }>Cancel</button>

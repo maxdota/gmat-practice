@@ -41,6 +41,7 @@ const EditQuestionDetailsLeftRight = () => {
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
+    { value: 'single_choice', label: 'Single Choice' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -51,7 +52,6 @@ const EditQuestionDetailsLeftRight = () => {
   const RIGHT_TYPE_LIST = [
     { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
-    { value: '2_choice_table', label: '2 Choices Table' },
   ];
   const search = useLocation().search;
   let params = new URLSearchParams(search);

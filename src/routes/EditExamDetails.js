@@ -28,6 +28,7 @@ const EditExamDetails = () => {
   const [firstLoad, setFirstLoad] = useState(true);
   const [ecode, setEcode] = useState("");
   const [question, setQuestion] = useState("");
+  const [lastAddQuestionTime, setLastAddQuestionTime] = useState(0);
   const [questionInfo, setQuestionInfo] = useState("");
   const [questionData, setQuestionData] = useState({});
   const [section, setSection] = useState("");
@@ -44,6 +45,7 @@ const EditExamDetails = () => {
   const CENTER_TYPE_LIST = [
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
+    { value: 'single_choice', label: 'Single Choice' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -54,7 +56,6 @@ const EditExamDetails = () => {
   const RIGHT_TYPE_LIST = [
     { value: 'yes_no', label: 'Yes/No Statement' },
     { value: 'single_choice', label: 'Single Choice' },
-    { value: '2_choice_table', label: '2 Choices Table' },
   ];
   const [displayInputModal, setDisplayInputModal] = useState({ display: false });
   const [displayWarnModal, setDisplayWarnModal] = useState({ display: false });
@@ -83,11 +84,25 @@ const EditExamDetails = () => {
   useEffect(() => {
     if (firstLoad) {
       setFirstLoad(false);
-      // app = initializeApp(firebaseConfig);
-      // database = getDatabase(app);
       readFirebaseData();
     }
-  });
+  }, [firstLoad]);
+  useEffect(() => {
+    if (lastAddQuestionTime != 0) {
+      let divElement = document.getElementsByClassName('question-opt-cont')[0];
+      divElement.scrollTop = divElement.scrollHeight;
+    }
+  }, [lastAddQuestionTime]);
+
+  function setEditingParams() {
+    const editingEcode = localStorage.getItem("editing_ecode");
+    if (editingEcode === null) return;
+    setEcode(editingEcode)
+    const editingSection = localStorage.getItem("editing_section");
+    if (editingSection === null) return;
+    setSection(editingSection)
+    readQuestionFirebaseData(editingEcode, editingSection);
+  }
 
   function ListOptionExam() {
     return list.map(item => {
@@ -100,7 +115,9 @@ const EditExamDetails = () => {
               value={ item }
               checked={ item === ecode }
               onChange={ (e) => {
-                setEcode(e.currentTarget.value)
+                const ecod = e.currentTarget.value;
+                localStorage.setItem("editing_ecode", ecod);
+                setEcode(ecod);
                 setSection("");
                 setQuestion("");
                 setQuestionList([]);
@@ -129,8 +146,9 @@ const EditExamDetails = () => {
               value={ item.value }
               checked={ item.value === section }
               onChange={ (e) => {
-                let sec = e.currentTarget.value;
-                readQuestionFirebaseData(sec);
+                const sec = e.currentTarget.value;
+                localStorage.setItem("editing_section", sec);
+                readQuestionFirebaseData(ecode, sec);
                 setSection(sec);
                 setQuestion("");
                 setQuestionData({});
@@ -247,20 +265,17 @@ const EditExamDetails = () => {
     onValue(examRef, (snapshot) => {
       let rawList = snapshot.val();
       setList((rawList === "" || rawList === null) ? [] : rawList.split(LIST_SEP));
-    }, {
-      onlyOnce: true
-    });
+      setEditingParams();
+    }, { onlyOnce: true });
   }
 
-  function readQuestionFirebaseData(sec) {
-    const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + sec + "/question_list";
+  function readQuestionFirebaseData(ec, sec) {
+    const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ec + "/" + sec + "/question_list";
     const questionRef = ref(database, path);
     onValue(questionRef, (snapshot) => {
       let rawList = snapshot.val();
       setQuestionList((rawList === "" || rawList === null) ? [] : rawList.split(LIST_SEP));
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
   }
 
   function getLabelFromList(list, value) {
@@ -295,9 +310,7 @@ const EditExamDetails = () => {
         setQuestionInfo(info);
         setQuestionData(data);
       }
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
   }
 
   const onQuestionArrangementChange = (e) => {
@@ -360,7 +373,7 @@ const EditExamDetails = () => {
     }
     const updates = {};
     questionList.splice(questionList.indexOf(questionNumber), 1);
-    let newList = questionList.sort();
+    let newList = questionList.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     setQuestionList(newList);
     updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(LIST_SEP);
     updates[`exams/${ ecode }/${ section }/questions/${ questionNumber }`] = null;
@@ -389,9 +402,7 @@ const EditExamDetails = () => {
     updates[`exam_list`] = newList.join(LIST_SEP);
     updates[`exams/${ examCode }`] = examData;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
-    update(exRef, updates).then(() => {
-      // readFirebaseData();
-    });
+    update(exRef, updates).then();
   };
   const writeNewQuestion = () => {
     const updates = {};
@@ -407,13 +418,19 @@ const EditExamDetails = () => {
         type: questionAddData.rightType
       },
     };
-    questionList.push(questionAddData.questionNumber.toString());
-    let newList = questionList.sort();
+    const q = questionAddData.questionNumber.toString();
+    questionList.push(q);
+    let newList = questionList.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     setQuestionList(newList);
     updates[`exams/${ ecode }/${ section }/question_list`] = newList.join(LIST_SEP);
     updates[`exams/${ ecode }/${ section }/questions/${ questionAddData.questionNumber }`] = data;
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
-    update(exRef, updates).then();
+    update(exRef, updates).then(() => {
+      setLastAddQuestionTime(Date.now());
+      setQuestion(q);
+      setQuestionData({});
+      readQuestionInfoFirebaseData(q);
+    });
   };
   const onSubmitExamCode = () => {
     const code = document.getElementById("modal-input-value").value;
@@ -466,7 +483,7 @@ const EditExamDetails = () => {
         <div className="edit-question-cont">
           <img className="add-image" src={ process.env.PUBLIC_URL + "/icon_add.png" } onClick={ onAddQuestion }/>
           <h2 className="edit-label">Question</h2>
-          <div className="ecode-opt-cont">
+          <div className="question-opt-cont">
             <ListOptionQuestion/>
           </div>
         </div>
