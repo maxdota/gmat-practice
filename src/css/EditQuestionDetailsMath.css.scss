@@ -1,0 +1,81 @@
+.edit-question-details-math {
+  .mid-cont {
+    margin-top: 55px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90vw;
+  }
+  .option-cell {
+    display: flex;
+    padding: 10px;
+  }
+  .radio-text {
+    margin-left: 2px;
+    margin-top: 4px;
+  }
+  .left-cont {
+    width: 350px;
+  }
+  .op-hor-line {
+    height: 1px;
+    background: gray;
+  }
+  .op-cont {
+    white-space: nowrap;
+    height: calc(100vh - 300px);
+    overflow: auto;
+    border: 1px solid black;
+    background: transparent;
+    margin-bottom: 15px;
+    margin-top: 10px;
+  }
+  .option-text {
+    padding-right: 10px;
+  }
+
+  .content-cont {
+    flex-grow: 1;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+  .info-cont {
+    height: calc(100vh - 300px);
+    overflow: auto;
+    border: 1px solid black;
+    background: transparent;
+    margin-bottom: 25px;
+    padding: 6px 12px;
+    margin-top: 10px;
+  }
+
+  .edit-label {
+    display: inline-flex;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .edit-cont {
+    display: flex;
+  }
+
+  .add-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    float: right;
+  }
+
+  .delete-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    border-radius: 6px;
+  }
+
+  .check-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+  }
+}

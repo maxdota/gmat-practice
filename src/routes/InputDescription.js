@@ -343,7 +343,7 @@ const InputDescription = () => {
     });
   };
   const mainDivClass = () => {
-    if (additionalMainDivClass === undefined) {
+    if (additionalMainDivClass === undefined || additionalMainDivClass === null) {
       return "main-container";
     }
     return "main-container" + additionalMainDivClass;

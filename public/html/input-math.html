@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Input</title>
+    <style>
+        body {
+            overflow-x:hidden;
+        }
+        .ck-editor {
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="editor" placeholder="Type the content here!">
+    <p>Lorem... <span class="math-tex"> \(x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} \) </span> ...ipsum</p>
+    <p>Lorem... <span class="math-tex"> \[ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} \] </span> ...ipsum</p>
+    <p>Lorem...
+        <script type="math/tex">x+\sqrt{1-x^2}</script>
+        ...ipsum
+    </p>
+    <p>Lorem...
+        <script type="math/tex; mode=display">x+\sqrt{1-x^2}</script>
+        ...ipsum
+    </p>
+</div>
+
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+  MathJax.Ajax.config.path["mhchem"] = "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.2";
+  MathJax.Hub.Config({
+    showMathMenu: false,
+    TeX: {
+      extensions: ["[mhchem]/mhchem.js"]
+    },
+    messageStyle: "none",
+    tex2jax: {
+      preview: "none"
+    }
+  });
+</script>
+<script src="../script/cked.js"></script>
+<script>
+  window.addEventListener("message", receiveMessage, false);
+
+  function receiveMessage(event)
+  {
+    if (event.data != null && event.data["on-need"] !== undefined) {
+      document.getElementById("sample").innerText = "on received!";
+      console.log("on received!");
+      console.log(event.data["on-need"]);
+      window.parent.postMessage({"ck-content": window.ckeditor.getData()});
+    }
+  }
+  function getEditorData() {
+    const data = window.ckeditor.getData();
+
+    // // HTML
+    // const preview = document.getElementById('editor-preview');
+    // preview.innerHTML = data;
+    // MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview]); // MathJax 2
+    //
+    // // Text
+    // document.getElementById('editor-preview-html').innerText = data;
+  }
+
+  ClassicEditor.create(document.querySelector('#editor'), {
+    math: {
+      engine: 'mathjax',
+      outputType: 'script',
+      forceOutputType: false,
+      enablePreview: true
+    },
+  })
+    .then(editor => {
+      window.ckeditor = editor;
+      getEditorData();
+      editor.model.document.on('change:data', () => {
+        getEditorData();
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+</script>
+</body>
+
+</html>

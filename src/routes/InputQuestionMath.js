@@ -57,11 +57,11 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref, update } from "firebase/database";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../elements/Navbar";
-import '../css/InputQuestion.css.scss';
+import '../css/InputQuestionMath.css.scss';
 import Modal from "react-modal";
 import InlineOption from "../elements/ckeditor/inlineoption";
 import TwoPart from "../elements/ckeditor/twopart";
-import InlineMath from "../elements/ckeditor/inlinemath";
+// import InlineMath from "../elements/ckeditor/inlinemath";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -74,7 +74,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURE_ID,
 };
 
-const InputQuestion = () => {
+const InputQuestionMath = () => {
   Modal.appElement = "#root";
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
@@ -197,9 +197,9 @@ const InputQuestion = () => {
   } else if (centerType === 'two_part') {
     toolbarPlugins.push(TwoPart);
     toolbarItems.unshift("twoPart");
-  } else if (centerType === 'math') {
-    toolbarPlugins.push(InlineMath);
-    toolbarItems.unshift("inlineMath");
+  // } else if (centerType === 'math') {
+  //   toolbarPlugins.push(InlineMath);
+  //   toolbarItems.unshift("inlineMath");
   }
   let editor;
   const editorConfig = {
@@ -290,17 +290,46 @@ const InputQuestion = () => {
     navigate(-1);
   };
   const onSave = () => {
-    insertData("abc ngoc");
-    // if (inputEditor === undefined || inputEditor === null) return;
-    // writeFirebaseData(inputEditor.getData());
-  };
-  const onPreview = () => {
+    // insertData("abc ngoc");
     if (inputEditor === undefined || inputEditor === null) return;
-    let data = inputEditor.getData();
-    writeFirebaseData(data);
-    localStorage.setItem('review_question', data);
-    navigate('/question?preview=true');
+    writeFirebaseData(inputEditor.getData());
   };
+  // const onPreview = () => {
+  //   if (inputEditor === undefined || inputEditor === null) return;
+  //   let data = inputEditor.getData();
+  //   writeFirebaseData(data);
+  //   localStorage.setItem('review_question', data);
+  //   navigate('/question?preview=true');
+  // };
+  const onButtonSquareRoot = () => {
+    insertToEditor(`\\(x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}\\)`);
+  }
+  const onButtonSub = () => {
+    insertToEditor(`\\(a_{12}\\)`);
+  }
+  const onButtonSquare = () => {
+    insertToEditor(`\\(a^{22}\\)`);
+  }
+  const onButtonSquareAndSquareRoot = () => {
+    insertToEditor(`\\(\\sqrt{x^2+1}\\)`);
+  }
+  const onButtonFractionSimple = () => {
+    insertToEditor(`\\(\\frac{2}{3}\\)`);
+  }
+  const onButtonFractionSquareRoot = () => {
+    insertToEditor(`\\(\\sqrt{\\frac{3}{5}}\\)`);
+  }
+  const onButtonFraction = () => {
+    insertToEditor(`\\(\\frac{a^2+b+c}{abc}\\)`);
+  }
+  const onButtonPercent = () => {
+    insertToEditor(`\\(5\\%\\)`);
+  }
+  const insertToEditor = (content) => {
+    const viewFragment = inputEditor.data.processor.toView(content);
+    const modelFragment = inputEditor.data.toModel(viewFragment)
+    inputEditor.model.insertContent(modelFragment);
+  }
 
   function getLabelFromList(list, value) {
     return list.filter(item => item.value === value)[0].label;
@@ -308,21 +337,17 @@ const InputQuestion = () => {
 
   function readFirebaseData(e) {
     const path = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + ecode + "/" + section + "/questions/" + question + "/" + arrangement + "/content";
-    const dataRef = ref(database, path);
-    onValue(dataRef, (snapshot) => {
+    onValue(ref(database, path), (snapshot) => {
       let rawData = snapshot.val();
       e.setData((rawData === null || rawData === undefined) ? "" : rawData);
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
   }
 
   const writeFirebaseData = (data) => {
     const path = 'exams/' + ecode + "/" + section + "/questions/" + question + "/" + arrangement + "/content";
     const updates = {};
     updates[path] = data;
-    const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
-    update(exRef, updates).then(() => {
+    update(ref(database, process.env.REACT_APP_FB_ROOT_DATA), updates).then(() => {
       setDisplayWarnModal({
         display: true,
         title: "Complete",
@@ -344,7 +369,7 @@ const InputQuestion = () => {
   const insertData = (data) => {
     console.log("inputEditor");
     console.log(inputEditor);
-    if(inputEditor) {
+    if (inputEditor) {
 
       const op1Data = JSON.parse(localStorage.getItem('op1_data'));
       console.log("op1Data.options[1]");
@@ -357,10 +382,11 @@ const InputQuestion = () => {
 
 
       inputEditor.model.change(writer => {
-        const rawHtml = writer.createElement( 'rawHtml' );;
-        inputEditor.model.insertObject( rawHtml, null, null, {
+        const rawHtml = writer.createElement('rawHtml');
+        ;
+        inputEditor.model.insertObject(rawHtml, null, null, {
           setSelection: 'after'
-        } );
+        });
       })
 
       // inputEditor.model.change(writer => {
@@ -370,31 +396,41 @@ const InputQuestion = () => {
     }
   };
   return (
-    <div className="input-question">
+    <div className="input-question-math">
       <Navbar/>
       <div className="mid-cont">
         <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
-        <h3>Type: { getLabelFromList(CENTER_TYPE_LIST, centerType) }</h3>
+        <div>Type: { getLabelFromList(CENTER_TYPE_LIST, centerType) }</div>
         <div className="main-container">
-          <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
+          <div className="button-and-preview-cont">
+            <div className="button-cont">
+              <button onClick={ onButtonSquare }>{ `\\(a^{22}\\)` }</button>
+              <button onClick={ onButtonSub }>{ `\\(a_{12}\\)` }</button>
+              <button onClick={ onButtonSquareAndSquareRoot }>{ `\\(\\sqrt{x^2+1}\\)` }</button>
+              <button onClick={ onButtonFractionSimple }>{ `\\(\\frac{2}{3}\\)` }</button>
+              <button onClick={ onButtonFractionSquareRoot }>{ `\\(\\sqrt{\\frac{3}{5}}\\)` }</button>
+              <button onClick={ onButtonFraction }>{ `\\(\\frac{a^2+b+c}{abc}\\)` }</button>
+              <button onClick={ onButtonSquareRoot }>{ `\\(x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}\\)` }</button>
+              <button onClick={ onButtonPercent }>{ `\\(5\\%\\)` }</button>
+            </div>
+            <div className="preview-content ck-content"/>
+          </div>
+          <div className="math-jax-ignore editor-container editor-container_classic-editor" ref={ editorContainerRef }>
             <div className="editor-container__editor">
               <div ref={ editorRef }>{ isLayoutReady && <CKEditor
                 editor={ ClassicEditor }
                 config={ editorConfig }
                 onChange={ (event, editor) => {
                   console.log("Edit onChange!");
-                  // if (typeof window?.MathJax !== "undefined") {
-                  //   window.MathJax.typeset();
-                  // }
+                  document.getElementsByClassName('preview-content')[0].innerHTML = editor.getData();
+                  if (typeof window?.MathJax !== "undefined") {
+                    window.MathJax.typesetClear();
+                    window.MathJax.typeset();
+                  }
                 } }
                 onReady={ (e) => {
                   editor = e;
                   setInputEditor(e);
-                  // if (localStorage.getItem("test_input_question") === null) {
-                  //   editor.setData("");
-                  // } else {
-                  //   editor.setData(localStorage.getItem("test_input_question"));
-                  // }
                   readFirebaseData(editor);
                 } }
               /> }</div>
@@ -403,8 +439,8 @@ const InputQuestion = () => {
         </div>
       </div>
       <button className="but-back-bottom" onClick={ onBack }>BACK</button>
-      <button className="but-next-bottom" onClick={ onPreview }>SAVE & PREVIEW</button>
-      <button className="but-next-bottom-2" onClick={ onSave }>SAVE</button>
+      {/*<button className="but-next-bottom" onClick={ onPreview }>SAVE & PREVIEW</button>*/}
+      <button className="but-next-bottom" onClick={ onSave }>SAVE</button>
       <Modal
         className="warn-modal"
         isOpen={ displayWarnModal.display }
@@ -416,4 +452,4 @@ const InputQuestion = () => {
     </div>
   );
 }
-export default InputQuestion;
+export default InputQuestionMath;

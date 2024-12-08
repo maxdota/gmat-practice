@@ -1,0 +1,37 @@
+.input-question-math {
+  .main-container {
+    display: flex;
+    width: auto;
+    margin-top: 20px;
+  }
+  .mid-cont {
+    margin-top: 55px;
+    display: block;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+  .description-text {
+    margin-bottom: 25px;
+  }
+  .editor-container__editor {
+    max-width: none;
+    min-width: 0;
+    width: calc(50vw - 50px);
+    margin-bottom: 85px;
+  }
+  .button-and-preview-cont {
+    flex: 1;
+    margin-bottom: 85px;
+    margin-right: 10px;
+  }
+  .preview-content {
+    margin-top: 15px;
+  }
+  .editor-container {
+  }
+  .button-cont {
+    button {
+      margin-left: 5px;
+    }
+  }
+}

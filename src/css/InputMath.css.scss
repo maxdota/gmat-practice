@@ -1,4 +1,4 @@
-.input-description {
+.input-math {
   .mid-cont {
     margin-top: 55px;
     display: block;
@@ -14,5 +14,18 @@
     min-width: 0;
     width: 90vw;
     margin-bottom: 85px;
+  }
+  #math-iframe {
+    flex-grow: 1;
+    height: calc(100vh - 280px);
+    margin-left: 20px;
+    overflow-x: hidden;
+  }
+  .input-math-container {
+    display: flex;
+    margin-top: 20px;
+  }
+  .sample-cont {
+    width: 200px;
   }
 }

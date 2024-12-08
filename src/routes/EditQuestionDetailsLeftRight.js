@@ -46,6 +46,7 @@ const EditQuestionDetailsLeftRight = () => {
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
     { value: 'single_choice', label: 'Single Choice' },
+    { value: 'math', label: 'Single Choice (Mathematics)' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -520,7 +521,7 @@ const EditQuestionDetailsLeftRight = () => {
   return <div className="edit-question-details-left-right">
     <Navbar/>
     <div className="mid-cont">
-      <h1>Edit Question Number [{ question }], { sectionName }, Exam [{ ecode }]</h1>
+      <h1>Edit Question [{ question }], { sectionName }, Exam [{ ecode }]</h1>
       <p>Type: { arrangement === 'center' ? getLabelFromList(CENTER_TYPE_LIST, centerType) : `${ getLabelFromList(LEFT_TYPE_LIST, leftType) } - ${ getLabelFromList(RIGHT_TYPE_LIST, rightType) }` }</p>
       <div className="edit-cont">
         <div className="left-cont">

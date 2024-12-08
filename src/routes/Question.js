@@ -70,7 +70,6 @@ const Question = () => {
       // }, 1000)
     }
   }, [timer]);
-  // todo: allow mathematics formula
   useEffect(() => {
     if (endSection) {
       navigate("/", { replace: true });
@@ -93,7 +92,13 @@ const Question = () => {
         }
       }
     }
-  }, [firstLoad]);
+    console.log("window?.MathJax");
+    console.log(window?.MathJax);
+    if (typeof window?.MathJax !== "undefined") {
+      window.MathJax.typesetClear();
+      window.MathJax.typeset();
+    }
+  });
   const onCloseConfirmModal = () => {
     setDisplayConfirmModal({ display: false });
   };
@@ -143,17 +148,29 @@ const Question = () => {
   function ListSingleChoiceCenterOption() {
     const list = singleChoiceCenterData.optionList === undefined ? [] : singleChoiceCenterData.optionList
     return list.map(item => {
-        return <div key={ item } className="single-choice-row">
+        return <div key={ item } className={ SingleChoiceClass() }>
           <label className="single-choice-radio">
             <input type="radio" name="single-choice-option-center"
                    value={ item + "-single-choice-center" }
                    checked={ singleChoiceCenterData.userOption === item } onChange={ () => "" }
                    onClick={ () => onSelectSingleChoiceCenter(item) }/>
-            <div className="single-choice-text">{ singleChoiceCenterData.options[item] }</div>
+            <div className="single-choice-text">{ SingleChoiceText(singleChoiceCenterData.options[item]) }</div>
           </label>
         </div>
       }
     );
+  }
+
+  function CenterContentClass() {
+    return "center-content" + (singleChoiceCenterData.centerType === "math" ? ' math-font-size' : '');
+  }
+
+  function SingleChoiceClass() {
+    return "single-choice-row" + (singleChoiceCenterData.centerType === "math" ? ' math-font-size' : '');
+  }
+
+  function SingleChoiceText(text) {
+    return singleChoiceCenterData.centerType === "math" ? `\\(${ text }\\)` : text;
   }
 
   function ListSingleChoiceOption() {
@@ -231,6 +248,7 @@ const Question = () => {
   const onSelectSingleChoiceCenter = (key) => {
     singleChoiceCenterData.userOption = key;
     setSingleChoiceCenterData({
+      centerType: singleChoiceCenterData.centerType,
       optionList: singleChoiceCenterData.optionList,
       options: singleChoiceCenterData.options,
       userOption: singleChoiceCenterData.userOption,
@@ -284,7 +302,7 @@ const Question = () => {
         userQuestion.correct_option_2 = currentData['center']['answer_data_2']['correct_option'];
         userAnswer.option_1 = twoPartData.userOption1;
         userAnswer.option_2 = twoPartData.userOption2;
-      } else if (centerType === "single_choice") {
+      } else if (centerType === "single_choice" || centerType === "math") {
         userQuestion.correct_option = currentData['center']['answer_data']['correct_option'];
         userAnswer.option = singleChoiceCenterData.userOption;
       }
@@ -345,11 +363,12 @@ const Question = () => {
           optionList: centerData['answer_data_1']['option_list'].split(LIST_SEP),
           options: centerData['answer_data_1']['options'],
         })
-      } else if (centerType === "single_choice") {
+      } else if (centerType === "single_choice" || centerType === "math") {
         hideCont("two-part-cont");
         showCont("single-choice-center-cont");
         const centerData = questionData['center'];
         setSingleChoiceCenterData({
+          centerType: centerType,
           optionList: centerData['answer_data']['option_list'].split(LIST_SEP),
           options: centerData['answer_data']['options'],
         })
@@ -425,7 +444,7 @@ const Question = () => {
         Exam { progress.ecode } - { SECTION_LIST.filter(option => option.value === section)[0].label } -
         Question <b>{ questionNumber }/{ exam[section].totalQuestion }</b>
       </div>
-      <img className="calculator-image" src={ process.env.PUBLIC_URL + "/icon_calculator.png" }
+      <img className={`calculator-image` + (section === 'data' ? '' : ' hidden')} src={ process.env.PUBLIC_URL + "/icon_calculator.png" }
            onClick={ () => setDisplayCalculatorModal({ display: true }) }/>
       <div className="remaining-time">
         <div className="data-top-text">Remaining Time:&nbsp;<b>{ timerToString() }</b></div>
@@ -435,7 +454,7 @@ const Question = () => {
     <div className="mid-cont">
       <div className="ck-content mid-inner-cont">
         <div className="center-cont hidden">
-          <div className="center-content"/>
+          <div className={ CenterContentClass() }/>
           <div className="two-part-cont hidden">
             <div className="two-part-label-row">
               <label className="two-part-radio">1</label>

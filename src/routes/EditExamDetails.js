@@ -46,6 +46,7 @@ const EditExamDetails = () => {
     { value: 'inline_option', label: 'Inline Option' },
     { value: 'two_part', label: '2-part Analysis' },
     { value: 'single_choice', label: 'Single Choice' },
+    { value: 'math', label: 'Single Choice (Mathematics)' },
   ];
   const LEFT_TYPE_LIST = [
     { value: 'normal', label: 'Normal Text/Image' },
@@ -206,7 +207,11 @@ const EditExamDetails = () => {
       `&left_type=${ questionData.leftType }&right_type=${ questionData.rightType }`
     const params = `?ecode=${ ecode }&section=${ section }&question=${ question }&arrangement=${ questionData.arrangement }${ typeParams }`;
     if (questionData.arrangement === 'center') {
-      navigate(`/edit-question-details${ params }`);
+      if (questionData.centerType === 'math') {
+        navigate(`/edit-question-details-math${ params }`);
+      } else {
+        navigate(`/edit-question-details${ params }`);
+      }
     } else {
       navigate(`/edit-question-details-left-right${ params }`);
     }
@@ -244,6 +249,12 @@ const EditExamDetails = () => {
       return;
     }
     let missingNumber = getMissingNumber(questionList);
+    if (section === "quan") {
+      const data = { questionNumber: missingNumber, arrangement: "center", centerType: "math" };
+      setQuestionAddData(data);
+      writeNewQuestion(data);
+      return;
+    }
     setQuestionAddData({ questionNumber: missingNumber });
     setDisplayAddQuestionModal({ display: true, title: "Add Question Number " + missingNumber });
   };
@@ -404,7 +415,7 @@ const EditExamDetails = () => {
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then();
   };
-  const writeNewQuestion = () => {
+  const writeNewQuestion = (questionAddData) => {
     const updates = {};
     const data = {
       arrangement: questionAddData.arrangement,
@@ -457,7 +468,7 @@ const EditExamDetails = () => {
         description: "Please choose left/right type"
       });
     } else {
-      writeNewQuestion();
+      writeNewQuestion(questionAddData);
       onCloseAddQuestionModal();
     }
   };
