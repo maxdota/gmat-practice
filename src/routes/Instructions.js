@@ -21,12 +21,21 @@ const Instructions = () => {
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [questionReady, setQuestionReady] = useState(false);
+  const [timeReady, setTimeReady] = useState(false);
+  const [toNextPage, setToNextPage] = useState(false);
   const search = useLocation().search;
   let params = new URLSearchParams(search);
   const isPreview = params.get("preview");
   const navigate = useNavigate();
-  const [displayModal, setDisplayModal] = useState(false);
   const progress = JSON.parse(localStorage.getItem('progress'));
+
+  useEffect(() => {
+    console.log("questionReady=" + questionReady + ", timeReady=" + timeReady + ", toNextPage=" + toNextPage);
+    if (questionReady && timeReady && toNextPage) {
+      processToNextPage();
+    }
+  }, [questionReady, timeReady, toNextPage]);
 
   useEffect(() => {
     if (isPreview) {
@@ -40,21 +49,25 @@ const Instructions = () => {
       }
     }
   });
-  const onNext = () => {
+  const processToNextPage = () => {
     if (isPreview) return
     progress.question = 1;
     progress.startTime = Date.now();
     localStorage.removeItem('remaining_time');
+    localStorage.removeItem('remaining_answer');
     localStorage.setItem('progress', JSON.stringify(progress));
-    navigate("/question", { replace: false });
-    // navigate("/question", { replace: true });
+    navigate("/question", { replace: true });
   };
-  const onCloseModal = () => {
-    setDisplayModal(false);
+  const onNext = () => {
+    setToNextPage(true);
   };
 
   function validateProgress() {
     return true;
+  }
+
+  async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   function readFirebaseData() {
@@ -62,9 +75,7 @@ const Instructions = () => {
     onValue(ref(database, path), (snapshot) => {
       const raw = snapshot.val();
       document.getElementById("ins_desc").innerHTML = raw ? raw : '';
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
     const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + progress.ecode + "/" + progress[progress.step] + "/questions/1";
     onValue(ref(database, questionPath), (snapshot) => {
       const raw = snapshot.val();
@@ -76,9 +87,18 @@ const Instructions = () => {
         right: raw['right'],
       }
       localStorage.setItem('question', JSON.stringify(questionData));
-    }, {
-      onlyOnce: true
-    });
+      setQuestionReady(true);
+    }, { onlyOnce: true });
+    onValue(ref(database, process.env.REACT_APP_FB_ROOT_DATA + '/time_multiplier'), (snapshot) => {
+      const raw = snapshot.val();
+      const time = parseFloat(raw);
+      if (isNaN(time)) {
+        localStorage.removeItem('time_multiplier');
+      } else {
+        localStorage.setItem('time_multiplier', raw);
+      }
+      setTimeReady(true);
+    }, { onlyOnce: true });
   }
 
   return <div className="instructions">
@@ -89,12 +109,6 @@ const Instructions = () => {
       </div>
       <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
     </div>
-
-    <Modal className="warn-modal" isOpen={ displayModal }>
-      <div className="modal-nav-top">Cannot Continue</div>
-      <div className="description-text">Please select the order in which the exam sections are to be administered</div>
-      <button className="but-ok" onClick={ onCloseModal }>OK</button>
-    </Modal>
   </div>;
 };
 export default Instructions;

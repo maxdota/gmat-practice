@@ -51,6 +51,18 @@
     padding: 6px 12px;
   }
 
+  .time-multiplier-text {
+    margin-left: 40px;
+  }
+
+  .edit-image {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+
   .edit-label {
     display: inline-flex;
     margin-top: 0;
@@ -89,6 +101,7 @@
     height: 30px;
     padding: 2px;
     float: right;
+    cursor: pointer;
   }
 
   .delete-image {
@@ -99,6 +112,7 @@
     border-radius: 6px;
     margin-top: -6px;
     margin-right: -10px;
+    cursor: pointer;
   }
 }
 

@@ -20,6 +20,9 @@ const EditExamInstructions = () => {
       <button className="but-option" onClick={ () => editInstruction("data") }>Data Insights</button>
       <button className="but-option" onClick={ () => editInstruction("verb") }>Verbal Reasoning</button>
       <button className="but-option" onClick={ () => editInstruction("quan") }>Quantitative Reasoning</button>
+      <button className="but-option" onClick={ () => editInstruction("break_instructions") }>Optional Break Instructions</button>
+      <button className="but-option" onClick={ () => editInstruction("break_standby") }>Optional Break Stand-by Screen</button>
+      <button className="but-option" onClick={ () => editInstruction("whiteboard_confirm") }>Physical Whiteboard Confirmation</button>
       <button className="but-back-bottom" onClick={ onBack }>BACK</button>
     </div>
   </div>;

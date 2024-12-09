@@ -78,7 +78,10 @@ const InputInstruction = () => {
   const list = [
     { value: 'quan', label: 'Quantitative Reasoning' },
     { value: 'verb', label: 'Verbal Reasoning' },
-    { value: 'data', label: 'Data Insights' }
+    { value: 'data', label: 'Data Insights' },
+    { value: 'break_instructions', label: 'Optional Break Instructions' },
+    { value: 'break_standby', label: 'Optional Break Stand-by Screen' },
+    { value: 'whiteboard_confirm', label: 'Physical Whiteboard Confirmation' }
   ];
   const navigate = useNavigate();
   const editorContainerRef = useRef(null);
@@ -284,9 +287,7 @@ const InputInstruction = () => {
       console.log("fb data: " + rawData);
       e.setData((rawData === null || rawData === undefined) ? "" : rawData);
       setInstructionData({ editorReady: instructionData.editorReady, firebaseData: rawData });
-    }, {
-      onlyOnce: true
-    });
+    }, { onlyOnce: true });
   }
 
   const writeInstruction = (data) => {
@@ -302,7 +303,7 @@ const InputInstruction = () => {
       <Navbar/>
       <div className="mid-cont">
         <h1>Edit { sectionName } Instructions</h1>
-        <div className="main-container">
+        <div className="">
           <div className="editor-container editor-container_classic-editor" ref={ editorContainerRef }>
             <div className="editor-container__editor">
               <div ref={ editorRef }>{ isLayoutReady && <CKEditor

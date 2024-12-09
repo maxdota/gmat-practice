@@ -32,6 +32,7 @@ const EditExamDetails = () => {
   const [questionInfo, setQuestionInfo] = useState("");
   const [questionData, setQuestionData] = useState({});
   const [section, setSection] = useState("");
+  const [timeMultiplier, setTimeMultiplier] = useState(null);
   const [questionAddData, setQuestionAddData] = useState({ questionNumber: 0 });
   const SECTION_LIST = [
     { value: 'quan', label: 'Quantitative Reasoning' },
@@ -81,6 +82,14 @@ const EditExamDetails = () => {
       deleteQuestion(displayConfirmModal.data);
     }
     onCloseConfirmModal();
+  };
+  const onSubmitInputModal = () => {
+    const input = document.getElementById("modal-input-value").value;
+    if (displayInputModal.action === "add_exam") {
+      onSubmitExamCode(input)
+    } else if (displayInputModal.action === "edit_time") {
+      editTimeMultiplier(input)
+    }
   };
   useEffect(() => {
     if (firstLoad) {
@@ -235,9 +244,23 @@ const EditExamDetails = () => {
       data: data
     });
   };
-
+  const onEditTimeMultiplier = () => {
+    setDisplayInputModal({
+      action: "edit_time",
+      display: true,
+      title: "Input Time Multiplier (value 2 means x2 time speed)",
+      placeholder: "2",
+      confirmText: "Set"
+    });
+  };
   const onAddExam = () => {
-    setDisplayInputModal({ display: true, title: "Input Exam Code", placeholder: "001, 002, 003..." });
+    setDisplayInputModal({
+      action: "add_exam",
+      display: true,
+      title: "Input Exam Code",
+      placeholder: "001, 002, 003...",
+      confirmText: "Add"
+    });
   };
   const onAddQuestion = () => {
     if (ecode === "" || section === "") {
@@ -272,11 +295,13 @@ const EditExamDetails = () => {
   }
 
   function readFirebaseData() {
-    const examRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA + '/exam_list');
-    onValue(examRef, (snapshot) => {
+    onValue(ref(database, process.env.REACT_APP_FB_ROOT_DATA + '/exam_list'), (snapshot) => {
       let rawList = snapshot.val();
       setList((rawList === "" || rawList === null) ? [] : rawList.split(LIST_SEP));
       setEditingParams();
+    }, { onlyOnce: true });
+    onValue(ref(database, process.env.REACT_APP_FB_ROOT_DATA + '/time_multiplier'), (snapshot) => {
+      setTimeMultiplier(snapshot.val());
     }, { onlyOnce: true });
   }
 
@@ -391,6 +416,13 @@ const EditExamDetails = () => {
     const exRef = ref(database, process.env.REACT_APP_FB_ROOT_DATA);
     update(exRef, updates).then();
   };
+  const writeTimeMultiplier = (time) => {
+    const timeString = (isNaN(time) || time <= 0) ? null : time.toFixed(2);
+    const updates = { 'time_multiplier': timeString };
+    update(ref(database, process.env.REACT_APP_FB_ROOT_DATA), updates).then(() => {
+      setTimeMultiplier(timeString);
+    });
+  };
   const writeNewExam = (examCode) => {
     const updates = {};
     const examData = {
@@ -443,8 +475,12 @@ const EditExamDetails = () => {
       readQuestionInfoFirebaseData(q);
     });
   };
-  const onSubmitExamCode = () => {
-    const code = document.getElementById("modal-input-value").value;
+  const editTimeMultiplier = (timeString) => {
+    const time = parseFloat(parseFloat(timeString).toFixed(2));
+    writeTimeMultiplier(time);
+    onCloseInputModal();
+  };
+  const onSubmitExamCode = (code) => {
     if (list.includes(code)) {
       onCloseInputModal();
       setDisplayWarnModal({ display: true, title: "Duplicated Exam code", description: "Please choose another code" });
@@ -472,11 +508,18 @@ const EditExamDetails = () => {
       onCloseAddQuestionModal();
     }
   };
+  const timeMultiplierText = () => {
+    return timeMultiplier === null ? "Time Multiplier: None" : `Time Multiplier: x${ timeMultiplier }`;
+  }
 
   return <div className="edit-exam-details">
     <Navbar/>
     <div className="mid-cont">
-      <h1>Edit Exam Details</h1>
+      <div className="flex-cont">
+        <h1>Edit Exam Details</h1>
+        <div className="time-multiplier-text">{ timeMultiplierText() }</div>
+        <img className="edit-image" src={ process.env.PUBLIC_URL + "/edit.svg" } onClick={ onEditTimeMultiplier }/>
+      </div>
       <div className="edit-cont">
         <div className="edit-exam-cont">
           <h2 className="edit-label">Exam</h2>
@@ -512,11 +555,11 @@ const EditExamDetails = () => {
       isOpen={ displayInputModal.display }
       contentLabel="Example Modal">
       <div className="modal-nav-top">{ displayInputModal.title }</div>
-      <input type="text" className="modal-text-input" id="modal-input-value"
+      <input type="text" className="modal-text-input" id="modal-input-value" autoFocus={ true }
              placeholder={ displayInputModal.placeholder }/>
       <div className="container-but">
         <button className="but-cancel" onClick={ onCloseInputModal }>Cancel</button>
-        <button className="but-ok" onClick={ onSubmitExamCode }>Add</button>
+        <button className="but-ok" onClick={ onSubmitInputModal }>{ displayInputModal.confirmText }</button>
       </div>
     </Modal>
 

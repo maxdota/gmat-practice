@@ -96,6 +96,11 @@ p {
   }
 }
 
+.flex-cont {
+  display: flex;
+  align-items: center;
+}
+
 .ver-line {
   width: 1px;
   //height: 100vh;
@@ -155,6 +160,23 @@ p {
   margin-left: auto;
   margin-right: 0;
   display: block;
+}
+
+.but-bottom-cont {
+  color: white;
+  font-size: 1.125rem;
+  bottom: 20px;
+  right: 50px;
+  display: flex;
+  position: fixed;
+  button {
+    background: dodgerblue;
+    color: white;
+    border-radius: 5px;
+    padding: 16px 32px;
+    border: none;
+    margin-left: 20px;
+  }
 }
 
 .but-next-bottom {
@@ -316,6 +338,23 @@ p {
     text-align: center;
     margin-top: 10px;
     padding: 10px 20px;
+  }
+}
+
+.data-top {
+  z-index: 1;
+  display: flex;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  right: 0;
+  padding: 3px 50px;
+  background: black;
+  color: white;
+  align-items: center;
+
+  .data-top-text {
+    margin-top: -2px;
   }
 }
 

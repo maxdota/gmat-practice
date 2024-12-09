@@ -2,9 +2,9 @@
   .mid-cont {
     margin-top: 55px;
     display: block;
-    width: 90vw;
-    margin-left: auto;
-    margin-right: auto;
+    width: auto;
+    margin-left: 50px;
+    margin-right: 50px;
   }
   .description-text {
     margin-bottom: 25px;
@@ -12,7 +12,7 @@
   .editor-container__editor {
     max-width: none;
     min-width: 0;
-    width: 90vw;
-    margin-bottom: 85px;
+    margin-top: 20px;
+    padding-bottom: 140px;
   }
 }

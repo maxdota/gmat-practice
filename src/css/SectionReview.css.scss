@@ -1,0 +1,108 @@
+.section-review {
+  .mid-cont {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 95px;
+  }
+
+  .mid-inner-cont {
+    display: flex;
+    width: 100vw;
+  }
+
+  .remaining-cont {
+    flex-grow: 1;
+    color: gold;
+  }
+
+  .remaining-time {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .remaining-answer {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .clock-image {
+    width: 20px;
+    height: 20px;
+    margin-right: 7px;
+    margin-top: 1px;
+  }
+
+  .remaining-text {
+  }
+
+  .center-cont {
+    overflow: auto;
+    padding-bottom: 90px;
+    flex: 1;
+  }
+
+  .center-content {
+    margin: 20px 50px;
+  }
+
+  .review-table-cont {
+    display: flex;
+    margin-top: 20px;
+
+    .question-column {
+      margin-right: 20px;
+    }
+
+    .question-number-text {
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+      color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+      text-decoration: underline;
+    }
+
+    .question-row {
+      display: flex;
+    }
+
+    .question-row:last-child {
+      border-bottom: 1px solid black;
+    }
+
+    .question-row:nth-child(even) {
+      background: lightgray;
+    }
+
+    .cell {
+      width: 125px;
+      padding: 1px 0;
+      text-align: center;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+    }
+
+    .cell:last-child {
+      border-right: 1px solid black;
+    }
+
+    .label-left-cell {
+      background: dodgerblue;
+      color: white;
+    }
+
+    .label-right-cell {
+      background: dodgerblue;
+      color: white;
+    }
+  }
+}
+
+.ReactModalPortal {
+  position: absolute;
+  z-index: 2;
+}

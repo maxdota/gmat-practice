@@ -14,19 +14,6 @@
     width: 100vw;
   }
 
-  .data-top {
-    z-index: 1;
-    display: flex;
-    position: fixed;
-    top: 40px;
-    left: 0;
-    right: 0;
-    padding: 3px 20px;
-    background: black;
-    color: white;
-    align-items: center;
-  }
-
   .remaining-time {
     color: gold;
     display: flex;
@@ -40,10 +27,6 @@
     margin-right: 7px;
   }
 
-  .data-top-text {
-    margin-top: -2px;
-  }
-
   .remaining-text {
   }
 
@@ -51,6 +34,7 @@
     width: 30px;
     height: 30px;
     margin-left: 15px;
+    cursor: pointer;
   }
 
   .center-cont {

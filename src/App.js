@@ -19,6 +19,9 @@ import InputDescription from "./routes/InputDescription";
 import InputMath from "./routes/InputMath";
 import EditQuestionDetailsMath from "./routes/EditQuestionDetailsMath";
 import InputQuestionMath from "./routes/InputQuestionMath";
+import SectionReview from "./routes/SectionReview";
+import BreakAndEndPage from "./routes/BreakAndEndPage";
+import ExamResult from "./routes/ExamResult";
 
 function App() {
 
@@ -45,6 +48,8 @@ function App() {
         <Route path="/select-exam-code" element={ <SelectExamCode/> }/>
         <Route path="/select-order" element={ <SelectOrder/> }/>
         <Route path="/instructions" element={ <Instructions/> }/>
+        <Route path="/break-and-end-page" element={ <BreakAndEndPage/> }/>
+        <Route path="/exam-result" element={ <ExamResult/> }/>
         <Route path="/sec-data" element={ <SecData/> }/>
         <Route path="/admin-dashboard" element={ <AdminDashboard/> }/>
         <Route path="/ad" element={ <AdminDashboard/> }/>
@@ -59,6 +64,7 @@ function App() {
         <Route path="/edit-question-details-math" element={ <EditQuestionDetailsMath/> }/>
         <Route path="/edit-question-details-left-right" element={ <EditQuestionDetailsLeftRight/> }/>
         <Route path="/question" element={ <Question/> }/>
+        <Route path="/section-review" element={ <SectionReview/> }/>
         <Route path="/sec-question" element={ <SecQuestion/> }/>
         <Route path="/about" element={ <About/> }/>
       </Routes>

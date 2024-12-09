@@ -145,6 +145,7 @@
     height: 30px;
     padding: 2px;
     float: right;
+    cursor: pointer;
   }
 
   .delete-image {
@@ -152,11 +153,13 @@
     height: 30px;
     padding: 2px;
     border-radius: 6px;
+    cursor: pointer;
   }
 
   .check-image {
     width: 30px;
     height: 30px;
     padding: 2px;
+    cursor: pointer;
   }
 }

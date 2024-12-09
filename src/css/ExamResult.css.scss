@@ -1,0 +1,43 @@
+.exam-result {
+  .mid-cont {
+    display: block;
+    width: auto;
+    margin: 80px 50px;
+  }
+  .score-description {
+    margin-top: 20px;
+  }
+  .inner-score-cont {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .score-cont {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .score-table {
+    margin-top: 20px;
+  }
+
+  .score-row {
+    display: flex;
+  }
+
+  .label-cell {
+    width: 200px;
+  }
+
+  .correct-cell {
+    text-align: center;
+    width: 200px;
+  }
+
+  .question-cell {
+    text-align: center;
+    width: 200px;
+  }
+}

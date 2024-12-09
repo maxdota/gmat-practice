@@ -53,7 +53,7 @@ const SelectOrder = () => {
   };
   const onChange2 = (e) => {
     setSecond(e.value);
-    setThird(list.filter(option => option.value !== first && option.value !== second)[0].value);
+    setThird(list.filter(option => option.value !== first && option.value !== e.value)[0].value);
   };
   const onChange3 = (e) => {
     setThird(e.value)
@@ -115,6 +115,11 @@ const SelectOrder = () => {
   const navigateToNextPage = () => {
     const progress = { step: "first", first: first, second: second, third: third, ecode: ecode}
     localStorage.setItem('progress', JSON.stringify(progress));
+    localStorage.removeItem('has_break');
+    localStorage.removeItem('parent_questions');
+    localStorage.removeItem('section_progress_quan');
+    localStorage.removeItem('section_progress_verb');
+    localStorage.removeItem('section_progress_data');
     navigate("/instructions", { replace: true });
   }
   const onCloseModal = () => {

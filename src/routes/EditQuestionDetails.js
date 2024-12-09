@@ -459,7 +459,7 @@ const EditQuestionDetails = () => {
       isOpen={ displayInputModal.display }
       contentLabel="Example Modal">
       <div className="modal-nav-top">{ displayInputModal.title }</div>
-      <input type="text" className="modal-text-input" id="modal-input-value" autoFocus="true"
+      <input type="text" className="modal-text-input" id="modal-input-value" autoFocus={ true }
              placeholder={ displayInputModal.placeholder }/>
       <div className="container-but">
         <button className="but-cancel" onClick={ onCloseInputModal }>Cancel</button>

@@ -1,14 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
-import Select, { OnChangeValue, ActionMeta } from 'react-select';
+import Select from 'react-select';
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../elements/Navbar";
 import '../css/Question.css.scss';
 import Modal from 'react-modal';
 import CalculatorView from "../elements/CalculatorView";
 import ReactModal from "react-modal-resizable-draggable";
-import { hide } from "react-modal/lib/helpers/ariaAppHider";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -32,14 +31,13 @@ const Question = () => {
   const search = useLocation().search;
   let params = new URLSearchParams(search);
   const isPreview = params.get("preview");
+  const isReviewAndEdit = params.get("is_review_and_edit");
+  const reviewQuestionNumber = params.get("question_number");
   Modal.appElement = "#root";
   const navigate = useNavigate();
   const [firstLoad, setFirstLoad] = useState(true);
   const [displayConfirmModal, setDisplayConfirmModal] = useState({ display: false });
   const [displayCalculatorModal, setDisplayCalculatorModal] = useState({ display: false });
-  const [timer, setTimer] = useState(
-    localStorage.getItem('remaining_time') === null ? (45 * 60) : parseInt(localStorage.getItem('remaining_time'))
-  ); //in seconds
   const [questionNumber, setQuestionNumber] = useState(0);
   const [sortData, setSortData] = useState({ list: [], currentSort: "" });
   const [tabData, setTabData] = useState({ list: [], currentTab: "" });
@@ -50,35 +48,36 @@ const Question = () => {
   // this questionData is always data of the next question after loading next
   const [questionData, setQuestionData] = useState(JSON.parse(localStorage.getItem('question')));
   const [currentData, setCurrentData] = useState({});
-  const [endSection, setEndSection] = useState(false);
-  const [sectionProgress, setSectionProgress] = useState([]);
-  const timerToString = () => {
-    let hours = ('0' + Math.floor(timer / 3600)).slice(-2);
-    let minutes = ('0' + Math.floor(timer / 60)).slice(-2);
-    let seconds = ('0' + timer % 60).slice(-2);
-    return hours + ":" + minutes + ":" + seconds;
-  }
+  const [parentQuestions, setParentQuestions] = useState({});
+  const [currentParentNumber, setCurrentParentNumber] = useState('1');
   const progress = JSON.parse(localStorage.getItem('progress'));
   const exam = JSON.parse(localStorage.getItem('exam'));
   const section = progress[progress.step];
-  useEffect(() => {
-    if (timer > 0) {
-      setTimeout(() => {
-        setTimer(timer - 1);
-        localStorage.setItem('remaining_time', (timer - 1).toString());
-      }, 100000)
-      // }, 1000)
-    }
-  }, [timer]);
-  useEffect(() => {
-    if (endSection) {
-      navigate("/", { replace: true });
-    }
-  }, [endSection]);
+  const [sectionProgress, setSectionProgress] = useState(isReviewAndEdit ? JSON.parse(localStorage.getItem("section_progress_" + section)) : []);
+  const timerToString = () => {
+    const h = Math.floor(timer / (3600 * 1000));
+    const m = Math.floor((timer - h * 3600 * 1000) / (60 * 1000));
+    const s = Math.floor((timer - h * 3600 * 1000 - m * 60 * 1000) / 1000);
+    // console.log("h: " + h + ", m: " + m + ", s: " + s);
+    return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+  }
+  const timeMultiplier = parseFloat(localStorage.getItem('time_multiplier'));
+  const timeInterval = isNaN(timeMultiplier) ? 1000 : (1000 / timeMultiplier);
+  // let timer = localStorage.getItem('remaining_time') === null ? (45 * 60 * 1000) : parseInt(localStorage.getItem('remaining_time'));
+  let timer = localStorage.getItem('remaining_time') === null ? (45 * 60 * 1000) : parseInt(localStorage.getItem('remaining_time'));
+
+  function myConfirmation() {
+    // not work on browser default refresh/exit
+    return 'Please complete the exam.';
+  }
+
+  window.onbeforeunload = myConfirmation;
   useEffect(() => {
     if (questionNumber === questionData.number) {
       displayQuestionContent();
-      loadNextQuestion();
+      loadQuestionData(questionNumber + 1);
+    } else if (isReviewAndEdit && reviewQuestionNumber === questionData.number) {
+      displayQuestionContent();
     }
   }, [questionNumber, questionData]);
   useEffect(() => {
@@ -86,14 +85,24 @@ const Question = () => {
       setFirstLoad(false);
       if (isPreview) {
         document.getElementsByClassName("center-cont")[0].innerHTML = localStorage.getItem('review_question');
+        return;
+      }
+      const parentQ = JSON.parse(localStorage.getItem("parent_questions"));
+      if (isReviewAndEdit) {
+        console.log("review question: " + reviewQuestionNumber);
+        console.log('reading parent q');
+        console.log(parentQ);
+        setParentQuestions(parentQ === null ? {} : parentQ);
+        loadQuestionData(reviewQuestionNumber);
+        // runTimer();
       } else {
         if (validateProgress()) {
           setQuestionNumber(1);
+          setParentQuestions(parentQ === null ? {} : parentQ);
+          runTimer();
         }
       }
     }
-    console.log("window?.MathJax");
-    console.log(window?.MathJax);
     if (typeof window?.MathJax !== "undefined") {
       window.MathJax.typesetClear();
       window.MathJax.typeset();
@@ -116,10 +125,23 @@ const Question = () => {
     return true;
   }
 
+  function runTimer() {
+    const timerHtml = document.getElementById("timer");
+    if (timer > 0 && timerHtml != null) {
+      setTimeout(() => {
+        // console.log("current=" + Date.now() + ", timer=" + timer);
+        timer = timer - 1000;
+        timerHtml.innerHTML = timerToString();
+        localStorage.setItem('remaining_time', (timer - 1000).toString());
+        runTimer();
+      }, timeInterval)
+    }
+  }
+
   function ListTabOption() {
     const list = tabData.list
     return list.map(item => {
-        return <li className={ "tab-cell" + (item.value === tabData.currentTab ? " tab-active" : "") }
+        return <li key={ item.value } className={ "tab-cell" + (item.value === tabData.currentTab ? " tab-active" : "") }
                    onClick={ () => onChangeTab(item.value) }>{ item.label }</li>
       }
     );
@@ -209,20 +231,31 @@ const Question = () => {
     );
   }
 
-  function loadNextQuestion() {
-    if (exam[section].totalQuestion === questionNumber) {
+  function loadParentQuestionLeftData(parentNumber) {
+    console.log("loadParentQuestionLeftData " + parentNumber);
+    const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + progress.ecode + "/" + section + "/questions/" + parentNumber;
+    onValue(ref(database, questionPath), (snapshot) => {
+      const raw = snapshot.val();
+      displayLeftData(raw['left'], raw['left']['type'])
+    }, { onlyOnce: true });
+  }
+
+  function loadQuestionData(number) {
+    if (exam[section].totalQuestion < number) {
       return;
     }
-    const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + progress.ecode + "/" + section + "/questions/" + (questionNumber + 1);
+    const questionPath = process.env.REACT_APP_FB_ROOT_DATA + '/exams/' + progress.ecode + "/" + section + "/questions/" + number;
     onValue(ref(database, questionPath), (snapshot) => {
       const raw = snapshot.val();
       const newQuestionData = {
-        number: questionNumber + 1,
+        number: number,
         arrangement: raw['arrangement'],
         center: raw['center'],
         left: raw['left'],
         right: raw['right'],
       }
+      console.log("newQuestionData");
+      console.log(newQuestionData);
       setQuestionData(newQuestionData);
     }, { onlyOnce: true });
   }
@@ -312,7 +345,7 @@ const Question = () => {
       userQuestion.options = {};
       userAnswer.options = {};
       if (rightType === "yes_no") {
-        currentData['right']['option_list'].split(LIST_SEP).forEach((key, index) => {
+        currentData['right']['option_list'].split(LIST_SEP).forEach(key => {
           userQuestion.options[key] = currentData['right']['options'][key]['is_correct'];
           userAnswer.options[key] = yesNoData.userOptions[key];
         });
@@ -321,15 +354,20 @@ const Question = () => {
         userAnswer.option = singleChoiceData.userOption;
       }
     }
-    sectionProgress.push({ userQuestion: userQuestion, userAnswer: userAnswer });
+    if (isReviewAndEdit) {
+      sectionProgress[reviewQuestionNumber - 1] = { userQuestion: userQuestion, userAnswer: userAnswer };
+    } else {
+      sectionProgress.push({ userQuestion: userQuestion, userAnswer: userAnswer });
+    }
     setSectionProgress(sectionProgress);
     console.log(sectionProgress);
   }
   const confirmNext = () => {
     if (isPreview) return;
     updateUserAnswer();
-    if (exam[section].totalQuestion === questionNumber) {
-      setEndSection(true);
+    if (exam[section].totalQuestion === questionNumber || isReviewAndEdit) {
+      localStorage.setItem("section_progress_" + section, JSON.stringify(sectionProgress));
+      navigate("/section-review", { replace: true });
       return;
     }
     setQuestionNumber(questionNumber + 1);
@@ -345,12 +383,49 @@ const Question = () => {
     document.getElementsByClassName(contClass)[0].className = contClass + " hidden";
   }
 
+  function buttonNextText() {
+    return isReviewAndEdit ? "Return to Review Center" : "NEXT";
+  }
+
+  function displayLeftData(leftData, leftType) {
+    if (leftType === "sort_table") {
+      const list = [];
+      leftData['option_list'].split(LIST_SEP).forEach((key, index) => {
+        list.push({ value: index.toString(), label: key })
+      })
+      showCont("left-description");
+      document.getElementsByClassName("left-description")[0].innerHTML = leftData['content'];
+      showCont("sort-cont");
+      hideCont("tab-cont");
+      hideCont("normal-cont");
+      setSortData({ list: list, currentSort: "0", options: leftData['options'] });
+      document.getElementsByClassName("sort-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
+    } else if (leftType === "multi_tabs") {
+      const list = [];
+      leftData['option_list'].split(LIST_SEP).forEach((key, index) => {
+        list.push({ value: index.toString(), label: key })
+      })
+      hideCont("left-description");
+      hideCont("sort-cont");
+      showContIndent("tab-cont");
+      hideCont("normal-cont");
+      setTabData({ list: list, currentTab: "0", options: leftData['options'] });
+      document.getElementsByClassName("tab-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
+    } else if (leftType === "normal") {
+      hideCont("left-description");
+      hideCont("sort-cont");
+      hideCont("tab-cont");
+      showContIndent("normal-cont");
+      document.getElementsByClassName("normal-content")[0].innerHTML = leftData['normal_data']['content'];
+    }
+  }
+
   function displayQuestionContent() {
+    let isChild = false;
     if (questionData['arrangement'] === 'center') {
       showCont("center-cont");
       hideCont("left-right-cont");
       document.getElementsByClassName("center-content")[0].innerHTML = questionData['center']['content'];
-
       const centerType = questionData['center']['type'];
       if (centerType === "inline_option") {
         hideCont("two-part-cont");
@@ -380,36 +455,10 @@ const Question = () => {
       showCont("left-right-cont");
       document.getElementsByClassName("right-description")[0].innerHTML = rightData['content'];
       const leftType = questionData['left']['type'];
-      if (leftType === "sort_table") {
-        const list = [];
-        leftData['option_list'].split(LIST_SEP).forEach((key, index) => {
-          list.push({ value: index.toString(), label: key })
-        })
-        showCont("left-description");
-        document.getElementsByClassName("left-description")[0].innerHTML = leftData['content'];
-        showCont("sort-cont");
-        hideCont("tab-cont");
-        hideCont("normal-cont");
-        setSortData({ list: list, currentSort: "0", options: leftData['options'] });
-        document.getElementsByClassName("sort-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
-      } else if (leftType === "multi_tabs") {
-        const list = [];
-        leftData['option_list'].split(LIST_SEP).forEach((key, index) => {
-          list.push({ value: index.toString(), label: key })
-        })
-        hideCont("left-description");
-        hideCont("sort-cont");
-        showContIndent("tab-cont");
-        hideCont("normal-cont");
-        setTabData({ list: list, currentTab: "0", options: leftData['options'] });
-        document.getElementsByClassName("tab-content")[0].innerHTML = leftData['options'][list[0].label]['content'];
-      } else if (leftType === "normal") {
-        hideCont("left-description");
-        hideCont("sort-cont");
-        hideCont("tab-cont");
-        showContIndent("normal-cont");
-        document.getElementsByClassName("normal-content")[0].innerHTML = leftData['normal_data']['content'];
+      if (leftType === 'reuse') {
+        isChild = true;
       }
+      displayLeftData(leftData, leftType);
       const rightType = questionData['right']['type'];
       if (rightType === "yes_no") {
         showCont("yes-no-cont");
@@ -428,6 +477,22 @@ const Question = () => {
         })
       }
     }
+    console.log("parentQ before");
+    console.log(parentQuestions);
+    if (isChild) {
+      if (isReviewAndEdit) {
+        loadParentQuestionLeftData(parentQuestions[section + '_' + questionData.number]);
+      } else {
+        parentQuestions[section + '_' + questionData.number] = currentParentNumber;
+        setParentQuestions(parentQuestions);
+        console.log("parentQ after");
+        console.log(parentQuestions);
+        localStorage.setItem('parent_questions', JSON.stringify(parentQuestions));
+      }
+    } else {
+      setCurrentParentNumber(questionData.number);
+    }
+    console.log("currentParentNumber=" + currentParentNumber);
     setCurrentData({
       number: questionData.number,
       arrangement: questionData.arrangement,
@@ -441,13 +506,14 @@ const Question = () => {
     <Navbar/>
     <div className="data-top">
       <div className="data-top-text">
-        Exam { progress.ecode } - { SECTION_LIST.filter(option => option.value === section)[0].label } -
-        Question <b>{ questionNumber }/{ exam[section].totalQuestion }</b>
+        Exam { progress.ecode } - { getLabelFromList(SECTION_LIST, section) } -
+        Question <b>{ (isReviewAndEdit ? reviewQuestionNumber : questionNumber) }/{ exam[section].totalQuestion }</b>
       </div>
-      <img className={`calculator-image` + (section === 'data' ? '' : ' hidden')} src={ process.env.PUBLIC_URL + "/icon_calculator.png" }
+      <img className={ `calculator-image` + (section === 'data' ? '' : ' hidden') }
+           src={ process.env.PUBLIC_URL + "/icon_calculator.png" }
            onClick={ () => setDisplayCalculatorModal({ display: true }) }/>
       <div className="remaining-time">
-        <div className="data-top-text">Remaining Time:&nbsp;<b>{ timerToString() }</b></div>
+        <div className="data-top-text">Remaining Time:&nbsp;<b id="timer">00:45:00</b></div>
         <img className="clock-image" src={ process.env.PUBLIC_URL + "/icon_clock.png" }/>
       </div>
     </div>
@@ -505,7 +571,7 @@ const Question = () => {
           </div>
         </div>
       </div>
-      <button className="but-next-bottom" onClick={ onNext }>NEXT</button>
+      <button className="but-next-bottom" onClick={ onNext }>{ buttonNextText() }</button>
     </div>
     <ReactModal
       left={ 900 }
@@ -529,7 +595,7 @@ const Question = () => {
       <div className="description-text">{ displayConfirmModal.description }</div>
       <div className="container-but">
         <button className="but-cancel" onClick={ onCloseConfirmModal }>Cancel</button>
-        <button className="but-ok" onClick={ onConfirmConfirmModal }>Next Question</button>
+        <button className="but-ok" onClick={ onConfirmConfirmModal }>{ buttonNextText() }</button>
       </div>
     </Modal>
   </div>;
